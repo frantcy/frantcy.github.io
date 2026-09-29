@@ -200,27 +200,52 @@ def main():
 
     # ── Step 3: 挂载 SSH 公钥 ──
     print("\n[3/6] 挂载本机 SSH 公钥 …")
-    pubkey_path = Path.home() / ".ssh" / "id_ed25519.pub"
-    if not pubkey_path.exists():
-        print("   ⚠️  未找到 ~/.ssh/id_ed25519.pub，跳过（将改用 Token 推送）")
-        ssh_ready = False
+    ssh_dir = Path.home() / ".ssh"
+    local_pubs = sorted(ssh_dir.glob("*.pub")) if ssh_dir.exists() else []
+
+    def local_fingerprints() -> dict[str, Path]:
+        """本机所有公钥 → 指纹片段，用于判断是否已挂到账号上。"""
+        out = {}
+        for p in local_pubs:
+            try:
+                parts = p.read_text(encoding="utf-8").strip().split()
+                if len(parts) >= 2:
+                    out[parts[1][:16]] = p
+            except OSError:
+                continue
+        return out
+
+    acct_fingerprints = set()
+    status, keys = api("GET", "/user/keys", token)
+    if status == 200:
+        for k in keys:
+            kf = (k.get("key") or "").split()
+            if len(kf) >= 2:
+                acct_fingerprints.add(kf[1][:16])
+
+    mine = local_fingerprints()
+    already = set(mine) & acct_fingerprints
+    ssh_ready = False
+    if not local_pubs:
+        print("   ⚠️  本机没有任何 SSH 公钥，跳过（将改用 Token 推送）")
+    elif already:
+        # 至少有一把本机钥匙已经在这个账号上
+        ssh_ready = True
+        print(f"   ✅ 已有 {len(already)} 把本机钥匙挂在账号上")
     else:
-        pubkey = pubkey_path.read_text(encoding="utf-8").strip()
-        fingerprint = pubkey.split()[1][:16]
-        status, keys = api("GET", "/user/keys", token)
-        already = status == 200 and any(
-            k.get("key", "").split()[1][:16] == fingerprint for k in keys if k.get("key")
-        )
-        if already:
-            print("   ✅ 公钥已在账号上")
-            ssh_ready = True
-        else:
+        # 逐把尝试：GitHub 不允许同一把钥匙挂到两个账号，所以要找到未被占用的那把
+        for fp, p in mine.items():
             status, res = api("POST", "/user/keys", token, {
-                "title": f"MyBlog-{os.environ.get('COMPUTERNAME', 'PC')}",
-                "key": pubkey,
+                "title": f"MyBlog-{os.environ.get('COMPUTERNAME', 'PC')}-{p.stem}",
+                "key": p.read_text(encoding="utf-8").strip(),
             })
-            ssh_ready = status in (201, 200)
-            print("   ✅ 公钥已添加" if ssh_ready else f"   ⚠️  添加失败: {res.get('message')}")
+            if status in (201, 200):
+                ssh_ready = True
+                print(f"   ✅ 公钥已添加：{p.name}")
+                break
+            print(f"   ⚠️  {p.name} 添加失败（可能被别的账号占用），换下一把…")
+        if not ssh_ready:
+            print("   ⚠️  所有本机钥匙都不可用，将改用 Token 推送")
 
     # ── Step 4: 修正 site.json 的真实网址 ──
     print("\n[4/6] 更新 site.json 的站点地址 …")
