@@ -15,6 +15,7 @@ import re
 import json
 import shutil
 import hashlib
+import urllib.parse
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -314,6 +315,17 @@ class BlogRenderer:
         slug = re.sub(r"-{2,}", "-", slug).strip("-")
         return slug or "post"
 
+    def _page_url(self, post: dict) -> str:
+        """
+        文章的绝对链接（percent-encoded 中文也要编码）。
+
+        给 giscus 做评论映射用：它以「页面 URL」为键找对应讨论，
+        用绝对地址而不是相对 pathname，是为了让本地预览和线上
+        指向同一篇讨论，不会在换域名时把评论丢掉。
+        """
+        base = (self.config.get("site_url") or "").rstrip("/") or "http://localhost"
+        return f"{base}/posts/{urllib.parse.quote(post['slug'])}.html"
+
     # ═══════════════════════════════════════════════
     #  Markdown → HTML
     # ═══════════════════════════════════════════════
@@ -518,6 +530,7 @@ class BlogRenderer:
             "site_title": self.config["site_title"],
             "current_year": datetime.now().year,
             "relative_root": "../",               # 文章页需要 ../ 回到根目录
+            "page_url": self._page_url(post),      # 文章固定链接，供评论映射使用
             "prev_post": self._nav_post(prev_post) if prev_post else None,
             "next_post": self._nav_post(next_post) if next_post else None,
             "excerpt": meta.get("excerpt", ""),   # 给评论区做文章标识
@@ -1027,7 +1040,6 @@ def _parse_date_tuple(date_str: str) -> tuple:
 
 def _url_encode(s: str) -> str:
     """URL 编码（保留中文等非 ASCII 字符）。"""
-    import urllib.parse
     return urllib.parse.quote(s, safe="/")
 
 
