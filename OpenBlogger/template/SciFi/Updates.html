@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"><link rel="icon" href="{{ relative_root }}images/favicon.jpg">
+    <meta name="x-viewer-page-id" content="{{ page_id }}"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function(){var s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();</script>
+    <title>ACTIVITY_LOG — {{ site_title }}</title>
+    <style>
+        :root{--bg:#03050a;--card-bg:#0a0f1a;--text:#b0c8e0;--text-secondary:#5088b8;--accent:#00e5ff;--accent2:#ff00ff;--accent3:#00ff88;--warn:#ffaa00;--border:#142840;--max-width:850px}html.dark{--bg:#010208;--card-bg:#060c16}
+        @font-face{font-family:'Cyber';src:local('Courier New')}
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;display:flex;flex-direction:column;background-image:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(0,229,255,0.04),transparent),linear-gradient(rgba(0,229,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.02) 1px,transparent 1px);background-size:100% 100%,40px 40px,40px 40px}
+        body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,0.008) 2px,rgba(0,229,255,0.008) 4px)}
+        .status-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(5,10,20,0.9);backdrop-filter:blur(10px);border-bottom:1px solid rgba(0,229,255,0.2);padding:0.3rem 1.5rem;display:flex;justify-content:space-between;font-family:'Cyber',monospace;font-size:0.7rem;color:var(--accent);opacity:0.8}.blink{animation:blink 1.5s step-end infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        .navbar{position:sticky;top:1.5rem;z-index:100;max-width:var(--max-width);margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1.5rem;background:rgba(10,20,40,0.8);border:1px solid rgba(0,229,255,0.15);border-radius:8px;backdrop-filter:blur(12px);box-shadow:0 0 20px rgba(0,229,255,0.08);font-family:'Cyber',monospace}.navbar .brand{font-size:1rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.1em}.nav-links{display:flex;gap:1.2rem;list-style:none}.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.78rem;transition:all 0.3s}.nav-links a:hover,.nav-links a.active{color:var(--accent);text-shadow:0 0 8px var(--accent)}.theme-toggle{background:none;border:1px solid rgba(255,0,255,0.3);color:var(--text-secondary);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:0.8rem;transition:all 0.3s;display:flex;align-items:center;justify-content:center}.theme-toggle:hover{border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 15px rgba(255,0,255,0.3)}
+        .page-header{text-align:center;padding:2.5rem 1rem 1rem;position:relative;z-index:1}.page-header h1{font-size:1.8rem;font-family:'Cyber',monospace;color:var(--accent);text-shadow:0 0 20px rgba(0,229,255,0.3)}.page-header .subtitle{font-size:0.85rem;color:var(--text-secondary);font-family:'Cyber',monospace}
+        .container{max-width:var(--max-width);margin:0 auto;padding:0 1rem 3rem;flex:1;position:relative;z-index:1}
+        .summary{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;padding:0.8rem 1.2rem;margin-bottom:1.2rem;background:rgba(10,20,40,0.6);border:1px solid rgba(0,229,255,0.1);border-radius:4px;font-family:'Cyber',monospace;font-size:0.78rem;color:var(--text-secondary)}.summary strong{color:var(--accent)}
+        .tl-card{background:rgba(10,20,40,0.6);border:1px solid rgba(0,229,255,0.08);border-radius:4px;padding:0.8rem 1rem;margin-bottom:0.5rem;clip-path:polygon(0 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%);transition:all 0.3s}.tl-card:hover{border-color:var(--accent);transform:translateX(3px);box-shadow:0 0 15px rgba(0,229,255,0.1)}.tl-head{display:flex;align-items:baseline;gap:0.5rem;flex-wrap:wrap}.tl-head .tl-repo{font-weight:700;color:var(--accent);text-decoration:none;font-family:'Cyber',monospace}.tl-head .tl-repo:hover{text-decoration:underline}.tl-head .tl-ref{font-size:0.68rem;color:var(--accent3);background:rgba(0,255,136,0.08);padding:0.05rem 0.4rem;border-radius:2px;font-family:'Cyber',monospace}.tl-head .tl-time{font-size:0.65rem;color:var(--text-secondary);font-family:'Cyber',monospace;margin-left:auto}.tl-label{font-size:0.78rem;color:var(--text-secondary);margin-top:0.1rem}.tl-msgs{margin-top:0.3rem}.tl-msg{font-size:0.74rem;color:var(--text-secondary);padding:0.15rem 0;border-bottom:1px solid rgba(0,229,255,0.04)}.tl-msg:last-child{border-bottom:none}.tl-msg::before{content:'> ';color:var(--accent3);font-family:'Cyber',monospace}.tl-title{font-size:0.8rem;color:var(--text);margin-top:0.3rem}.tl-date-head{font-size:0.75rem;font-weight:700;color:var(--accent);font-family:'Cyber',monospace;padding:0.5rem 0 0.2rem;margin-top:0.8rem;border-bottom:1px solid rgba(0,229,255,0.1)}.tl-date-head:first-child{margin-top:0}.tl-empty{text-align:center;padding:3rem;color:var(--text-secondary);font-size:0.85rem;font-family:'Cyber',monospace}
+        .drawer{margin-bottom:0.6rem}.drawer summary{font-size:0.85rem;font-weight:700;color:var(--accent);font-family:'Cyber',monospace;padding:0.45rem 0.8rem;cursor:pointer;list-style:none;background:rgba(10,20,40,0.7);border:1px solid rgba(0,229,255,0.1);border-radius:4px;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;user-select:none}.drawer summary::-webkit-details-marker{display:none}.drawer summary:hover{border-color:var(--accent)}.drawer summary::after{content:'▸';font-size:0.9rem;color:var(--accent);transition:transform 0.3s}.drawer[open] summary::after{transform:rotate(90deg)}.drawer[open] summary{border-radius:4px 4px 0 0;border-bottom-color:transparent}.drawer-body{padding:0.2rem 0 0}
+        .back-to-top{position:fixed;bottom:2rem;right:2rem;z-index:200;width:40px;height:40px;border-radius:50%;background:rgba(10,20,40,0.8);border:1px solid rgba(0,229,255,0.2);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Cyber',monospace;backdrop-filter:blur(8px);opacity:0;transform:translateY(20px);pointer-events:none;transition:all 0.3s}.back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}.back-to-top:hover{box-shadow:0 0 30px rgba(0,229,255,0.4)}
+        .footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:0.72rem;border-top:1px solid rgba(0,229,255,0.08);font-family:'Cyber',monospace;position:relative;z-index:1;margin-top:auto}.footer span{color:var(--accent)}
+        @media(max-width:768px){.navbar{margin:0.5rem;border-radius:6px}.nav-links{gap:0.6rem}.nav-links a{font-size:0.68rem}}
+    </style>
+</head>
+<body>
+    <div class="status-bar"><span>SYS://ACTIVITY_LOG <span class="blink">●</span></span><span>UPLINK: ACTIVE</span><span id="clock">[--:--:--]</span></div>
+    <nav class="navbar"><a href="{{ relative_root }}index.html" class="brand">[ {{ site_title }} ]</a><ul class="nav-links"><li><a href="{{ relative_root }}index.html">HOME</a></li><li><a href="{{ relative_root }}directory.html">DIR</a></li><li><a href="{{ relative_root }}tags.html">TAG</a></li><li><a href="{{ relative_root }}resources.html">RES</a></li><li><a href="{{ relative_root }}friendlinks.html">LINK</a></li></ul><button class="theme-toggle" id="themeToggle">◐</button></nav>
+    <div class="page-header"><h1>&gt; ACTIVITY_LOG</h1><p class="subtitle">GITHUB EVENTS // FULL ARCHIVE</p></div>
+    <div class="container">
+        {% if updates and updates.summary %}<div class="summary"><span>EVENTS: <strong>{{ updates.summary.total_events }}</strong></span><span>REPOS: <strong>{{ updates.summary.total_repos }}</strong></span><span>COMMITS: <strong>{{ updates.summary.total_commits }}</strong></span>{% if updates.fetched_at %}<span style="font-size:0.65rem">FETCHED: {{ updates.fetched_at[:19].replace('T',' ') }}</span>{% endif %}</div>{% endif %}
+        {% if updates and updates.timeline %}
+            {% for e in updates.timeline %}
+                {% if loop.first or e.time[:10] != updates.timeline[loop.index0 - 1].time[:10] %}
+                    {% if not loop.first %}</div></details>{% endif %}
+                    <details class="drawer">
+                    <summary><span>## {{ e.time[:10] }}</span><span style="font-weight:400;font-size:0.7rem;color:var(--text-secondary)">▸</span></summary>
+                    <div class="drawer-body">
+                {% endif %}
+                <div class="tl-card">
+                    <div class="tl-head"><a class="tl-repo" href="{{ e.repo_url }}" target="_blank" rel="noopener">{{ e.repo.split('/')[-1] }}</a>{% if e.ref and e.type == 'PushEvent' %}<span class="tl-ref">{{ e.ref }}</span>{% endif %}<span class="tl-time">{{ e.time[11:] }}</span></div>
+                    <div class="tl-label">{{ e.icon }} {{ e.label }}</div>
+                    {% if e.messages %}<div class="tl-msgs">{% for msg in e.messages %}<div class="tl-msg">{{ msg }}</div>{% endfor %}</div>
+                    {% elif e.title %}<div class="tl-title">{% if e.action %}[{{ e.action }}] {% endif %}{{ e.title }}</div>
+                    {% elif e.detail %}<div class="tl-title">{{ e.detail }}</div>{% endif %}
+                </div>
+                {% if loop.last %}</div></details>{% endif %}
+            {% endfor %}
+        {% else %}<div class="tl-empty">&gt; NO ACTIVITY RECORDED<br><small>&gt; run: python OpenBlogger/Plugins/GitHubActivity/fetch.py --force</small></div>{% endif %}
+    </div>
+    <button class="back-to-top" id="backToTop">↑</button>
+    <footer class="footer"><p>POWERED_BY <span>OpenBlogger</span> // {{ current_year }}</p></footer>
+    <script>
+    !function(){const cl=document.getElementById('clock');setInterval(function(){cl.textContent='['+new Date().toTimeString().split(' ')[0]+']'},1000)}();
+    !function(){const t=document.getElementById('themeToggle'),b=document.documentElement,s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){b.classList.add('dark');t.textContent='◑'}t.addEventListener('click',function(){var d=b.classList.toggle('dark');t.textContent=d?'◑':'◐';localStorage.setItem('blog-theme',d?'dark':'light')})}();
+    !function(){var b=document.getElementById('backToTop');addEventListener('scroll',function(){b.classList.toggle('visible',scrollY>400)});b.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})})}();
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# 渲染输出（通过 git subtree 部署到 gh-pages）
+Rendered/
+
+# 本地虚拟环境
+.venv/
+venv/
+
+# 历史存档
+.archive/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 缓存与运行时数据
+.data/
+OpenBlogger/Plugins/GitHubActivity/.fetch_cache.json

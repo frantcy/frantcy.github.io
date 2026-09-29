@@ -1,0 +1,22 @@
+{
+    "site_title": "Frantcy 的日常",
+    "site_description": "记录每一天的思考与生活。",
+    "author": "Frantcy",
+    "language": "zh-CN",
+    "site_url": "https://REPLACE_ME.github.io",
+    "posts_per_page": 10,
+    "date_format": "%Y年%m月%d日",
+    "enable_rss": true,
+    "enable_sitemap": true,
+    "excerpt_length": 150,
+    "theme": "default",
+    "viewer": {
+        "enable_counter": true,
+        "enable_unique": true,
+        "enable_global": true,
+        "enable_comment": true,
+        "user": "aaaaa",
+        "secret": "d1bdf09a"
+    },
+    "github_token": ""
+}
