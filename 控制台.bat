@@ -12,17 +12,18 @@ echo ==========================================
 echo   OpenBlogger Control Panel
 echo ==========================================
 echo.
-echo   [1] Write     Open Raw folder
+echo   [1] Write     New diary for today
 echo   [2] Config    Open site.json
 echo   [3] Preview   Build + Server + Browser
 echo   [4] Build     Render only
 echo   [5] PushSrc   Push main branch
 echo   [6] Deploy    Build + Push gh-pages
-echo   [7] PushAll   Push main + gh-pages
-echo   [8] Exit
+echo   [7] PushAll   Write to GitHub (recommended)
+echo   [8] Folder    Open Raw folder
+echo   [9] Exit
 echo.
 set "opt="
-set /p "opt=Select [1-8]: "
+set /p "opt=Select [1-9]: "
 
 if "%opt%"=="1" goto write
 if "%opt%"=="2" goto config
@@ -31,13 +32,18 @@ if "%opt%"=="4" goto build
 if "%opt%"=="5" goto pushmain
 if "%opt%"=="6" goto deploy
 if "%opt%"=="7" goto pushall
-if "%opt%"=="8" goto exit
+if "%opt%"=="8" goto folder
+if "%opt%"=="9" goto exit
 goto menu
 
 :write
-start "" "Raw"
-echo Raw folder opened.
+"%PY%" new_post.py
+echo.
 pause
+goto menu
+
+:folder
+start "" "Raw"
 goto menu
 
 :config
@@ -77,6 +83,7 @@ goto menu
 echo.
 echo Build + Deploy gh-pages...
 "%PY%" -m OpenBlogger.cli build --force
+type nul > "Rendered\.nojekyll"
 git add -f Rendered/
 git commit -m "gh-pages deploy [auto]" 2>nul
 git subtree split --prefix Rendered -b _ghp_tmp
@@ -94,6 +101,7 @@ echo.
 set "msg=update"
 set /p "msg=Commit message: "
 "%PY%" -m OpenBlogger.cli build --force
+type nul > "Rendered\.nojekyll"
 git add -A
 git commit -m "!msg!"
 git push origin main
@@ -105,7 +113,7 @@ git branch -D _ghp_tmp 2>nul
 git reset --soft HEAD~1 2>nul
 git reset HEAD Rendered/ 2>nul
 echo.
-echo All done.
+echo All done. Your site updates in 1-3 minutes.
 pause
 goto menu
 

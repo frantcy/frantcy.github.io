@@ -355,6 +355,9 @@ def main():
         sys.exit(1)
     print("   ✅ 构建完成")
 
+    # .nojekyll：告诉 GitHub Pages 别用 Jekyll 再加工，否则会把 README 当首页
+    (PROJECT_ROOT / "Rendered" / ".nojekyll").write_text("", encoding="utf-8")
+
     run(["git", "add", "-f", "Rendered/"], check=False)
     run(["git", "commit", "-m", "gh-pages deploy [auto]"], check=False)
     run(["git", "subtree", "split", "--prefix", "Rendered", "-b", "_ghp_tmp"], check=False)

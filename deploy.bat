@@ -8,6 +8,9 @@ if exist ".venv\Scripts\python.exe" (set "PY=.venv\Scripts\python.exe") else (se
 echo Building + Deploy to gh-pages...
 "%PY%" -m OpenBlogger.cli build --force
 
+rem .nojekyll: 禁止 GitHub Pages 用 Jekyll 二次加工
+type nul > "Rendered\.nojekyll"
+
 git add -f Rendered/
 git commit -m "gh-pages deploy [auto]" 2>nul
 git subtree split --prefix Rendered -b _ghp_tmp
