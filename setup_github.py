@@ -23,6 +23,7 @@ import getpass
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import urllib.error
@@ -250,17 +251,30 @@ def main():
 
     # 先把 GitHub 的主机指纹写进 known_hosts，避免首次 SSH 卡在 yes/no 确认上
     def trust_hosts():
+        """预置 GitHub / ssh.github.com 的主机指纹。失败也不致命（GIT_SSH_COMMAND 还有兜底）。"""
+        tool = shutil.which("ssh-keyscan")
+        if not tool:
+            # Windows 上 ssh-keyscan 常常不在 PATH 里，去 OpenSSH 目录捞一下
+            for p in (Path(r"C:\Windows\System32\OpenSSH\ssh-keyscan.exe"),
+                      Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32" / "OpenSSH" / "ssh-keyscan.exe"):
+                if p.exists():
+                    tool = str(p)
+                    break
+        if not tool:
+            print("   ⚠️  找不到 ssh-keyscan，改用 SSH 自动接受指纹")
+            return False
         kh = Path.home() / ".ssh" / "known_hosts"
         kh.parent.mkdir(parents=True, exist_ok=True)
-        existing = {l.split()[0] for l in kh.read_text(encoding="utf-8", errors="ignore").splitlines() if l.strip()}
+        try:
+            existing = {l.split()[0] for l in kh.read_text(encoding="utf-8", errors="ignore").splitlines() if l.strip()}
+        except OSError:
+            existing = set()
         new_lines = []
         for host in ("github.com", "ssh.github.com"):
-            r = subprocess.run(
-                ["ssh-keyscan", "-T", "20", "-t", "rsa,ecdsa,ed25519", "-H", host],
-                capture_output=True, text=True, encoding="utf-8", errors="replace",
-            )
+            r = subprocess.run([tool, "-T", "20", "-t", "rsa,ecdsa,ed25519", host],
+                               capture_output=True, text=True, encoding="utf-8", errors="replace")
             for line in r.stdout.splitlines():
-                if line.strip() and line.split()[0] not in existing:
+                if line.strip() and not line.startswith("#") and line.split()[0] not in existing:
                     new_lines.append(line)
         if new_lines:
             with kh.open("a", encoding="utf-8") as f:
@@ -271,6 +285,9 @@ def main():
         trust_hosts()
     except Exception:
         pass
+
+    # 兜底：让 SSH 自动接受并保存未知主机指纹，避免非交互式场景卡死
+    os.environ["GIT_SSH_COMMAND"] = "ssh -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=15"
 
     pushed = False
     working_url = ssh_url
