@@ -97,9 +97,9 @@ title: 2026年09月29日
   不用注册账号；拿不到数据时会显示 `—`，不影响其它功能。
 - **评论（giscus / GitHub Discussions）**：评论存在仓库的 Discussions 里，免后端、免注册。
   配置在 `site.json` 的 `giscus` 段（仓库名、仓库 ID、分类名、分类 ID 都已填好），
-  开关是 `viewer.enable_comment`。
-  **唯一要你手动做的一步**：去 <https://github.com/apps/giscus> 点 Install，选中本仓库授权一次。
-  不装这个应用的话，评论框能显示但发不了言。
+  开关是 `viewer.enable_comment`。giscus 应用已安装完成，可以直接用。
+  > 用 `data-mapping="specific"` + 文章**固定链接**做映射（不是 pathname）。
+  > 这样本地预览和线上访问同一篇文章会落到同一篇讨论里，改了文件名评论也不会丢。
 - **弹幕栏**：原「精选发言」依赖可读的评论正文，giscus 跑在跨域 iframe 里读不到，
   所以默认关闭（`viewer.enable_danmaku`）。HTML/CSS 都还在，将来有可读评论源时打开即可。
 - **友链**：编辑 `Plugins/FriendLinks/links.json`，格式见文件里的 `_说明`。
