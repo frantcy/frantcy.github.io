@@ -3,7 +3,7 @@
     "site_description": "记录每一天的思考与生活。",
     "author": "Frantcy",
     "language": "zh-CN",
-    "site_url": "https://frantcee.github.io/MyBlog",
+    "site_url": "https://frantcy.github.io",
     "posts_per_page": 10,
     "date_format": "%Y年%m月%d日",
     "enable_rss": true,
