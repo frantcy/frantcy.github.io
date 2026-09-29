@@ -35,6 +35,8 @@ PAGE_ID_FILE = PROJECT_ROOT / ".data" / ".viewer_pages.json"
 CACHE_FILE = PROJECT_ROOT / ".data" / ".render_cache.json"
 PROJECTS_FILE = PLUGINS_DIR / "GitHubProjects" / "projects.json"
 UPDATES_FILE = PROJECT_ROOT / "OpenBlogger" / "Plugins" / "GitHubActivity" / "updates.json"
+STATIC_DIR = PROJECT_ROOT / "Static"                            # 原样拷贝到站点根目录的静态
+FRIEND_LINKS_FILE = PLUGINS_DIR / "FriendLinks" / "links.json"  # 友链数据（用户自己维护）
 
 # ── GitHub 语言颜色映射 ──
 LANG_COLORS = {
@@ -61,11 +63,19 @@ DEFAULT_CONFIG = {
         "enable_counter": True,
         "enable_unique": True,
         "enable_global": True,
-        "enable_comment": True,
-        "user": "aaaaa",
-        "secret": "d1bdf09a",
+        "enable_comment": False,
+        "user": "",
+        "secret": "",
     },
 }
+
+# 友链栏目的默认骨架（links 为空，等你自己在 links.json 里填）
+DEFAULT_LINK_SECTIONS = [
+    {"title": "👥 好友链接", "links": []},
+    {"title": "🛠️ 开发工具", "links": []},
+    {"title": "🤖 AI 工具", "links": []},
+    {"title": "📖 学习资源", "links": []},
+]
 
 
 class BlogRenderer:
@@ -470,7 +480,10 @@ class BlogRenderer:
         # Step 7.5: 复制友链项目
         self._copy_friends()
 
-        # Step 8: 复制 Viewer 插件 JS
+        # Step 8: 复制自定义静态页面
+        self._copy_static()
+
+        # Step 9: 复制 Viewer 插件 JS
         self._copy_viewer_js()
 
         # Step 9: 保存缓存 & 页面编号
@@ -596,29 +609,7 @@ class BlogRenderer:
             "github_token": gh_token,          # GitHub API 认证 token（空则无认证请求）
             "projects": self._load_projects(),
             "updates": self._load_updates(),    # 近七天 GitHub 活动
-            "link_sections": [
-                {
-                    "title": "🎮 在线小工具",
-                    "links": [
-                        {"name": "弹球挑战", "desc": "浏览器弹球游戏，30分挑战成功有红包", "icon": "🕹️", "tag": "游戏", "url": "friends/PinballChallenge/"},
-                        {"name": "三国杀记牌工具", "desc": "三国杀在线记牌辅助", "icon": "🃏", "tag": "桌游", "url": "friends/sgsrecord/"},
-                        {"name": "假邮件生成器", "desc": "恭喜你，你被坑了——在线整蛊页面", "icon": "📧", "tag": "整活", "url": "friends/fakemail/"},
-                        {"name": "西柚搜索工具", "desc": "西柚英语在线信息搜索工具", "icon": "🔍", "tag": "学习", "url": "friends/xiyou/"},
-                    ],
-                },
-                {
-                    "title": "🧪 实验性项目",
-                    "links": [
-                        {"name": "原神启动页", "desc": "原神风格网页还原练习", "icon": "✨", "tag": "前端", "url": "friends/genshin/"},
-                    ],
-                },
-                {
-                    "title": "📚 参考资源",
-                    "links": [
-                        {"name": "3500 词研究器", "desc": "英语 3500 词汇研究与数据库", "icon": "📊", "tag": "数据", "url": "friends/3500researcher/"},
-                    ],
-                },
-            ],
+            "link_sections": self._load_link_data("resources"),
             "current_year": datetime.now().year,
             "relative_root": "",
         }
@@ -627,42 +618,7 @@ class BlogRenderer:
         """构建友情链接页面上下文。"""
         return {
             "site_title": self.config["site_title"],
-            "friend_link_sections": [
-                {
-                    "title": "👥 好友链接",
-                    "links": [
-                        {"name": "MKrari", "desc": "个人博客", "icon": "<img src=\"images/ksm1.webp\" style=\"width:36px;height:36px;border-radius:50%\">", "url": "https://mkrari.cn/"},
-                    ],
-                },
-                {
-                    "title": "🛠️ 开发工具",
-                    "links": [
-                        {"name": "GitHub", "desc": "全球最大的代码托管平台", "icon": "🐙", "url": "https://github.com"},
-                        {"name": "TinyWebDB", "desc": "轻量级云数据库，Viewer 插件的数据后端", "icon": "☁️", "url": "https://tinywebdb.appinventor.space"},
-                        {"name": "jsDelivr", "desc": "免费 CDN，加速静态资源加载", "icon": "🚀", "url": "https://www.jsdelivr.com"},
-                        {"name": "Carbon", "desc": "代码截图美化工具", "icon": "🎨", "url": "https://carbon.now.sh"},
-                        {"name": "Regex101", "desc": "正则表达式在线测试与调试", "icon": "🔍", "url": "https://regex101.com"},
-                    ],
-                },
-                {
-                    "title": "🤖 AI 工具",
-                    "links": [
-                        {"name": "Claude", "desc": "Anthropic 的 AI 助手，OpenBlogger 的幕后搭档", "icon": "🧠", "url": "https://claude.ai"},
-                        {"name": "ChatGPT", "desc": "OpenAI 的对话 AI", "icon": "💬", "url": "https://chat.openai.com"},
-                        {"name": "Hugging Face", "desc": "开源 AI 模型社区，西柚英语翻译模型来源", "icon": "🤗", "url": "https://huggingface.co"},
-                        {"name": "Poe", "desc": "多模型 AI 聚合平台", "icon": "📱", "url": "https://poe.com"},
-                    ],
-                },
-                {
-                    "title": "📖 学习资源",
-                    "links": [
-                        {"name": "MDN Web Docs", "desc": "Web 开发权威文档", "icon": "📘", "url": "https://developer.mozilla.org/zh-CN/"},
-                        {"name": "Python 官方文档", "desc": "Python 语言标准库参考", "icon": "🐍", "url": "https://docs.python.org/zh-cn/3/"},
-                        {"name": "Markdown 指南", "desc": "Markdown 语法速查", "icon": "📝", "url": "https://www.markdownguide.org"},
-                        {"name": "Can I Use", "desc": "浏览器特性兼容性查询", "icon": "🌐", "url": "https://caniuse.com"},
-                    ],
-                },
-            ],
+            "friend_link_sections": self._load_link_data("sections"),
             "current_year": datetime.now().year,
             "relative_root": "",
         }
@@ -732,6 +688,59 @@ class BlogRenderer:
             "timeline": data.get("timeline", []),
             "by_repo": data.get("by_repo", {}),
         }
+
+    def _load_link_data(self, key: str):
+        """
+        友链 / 资源链接数据，来自 Plugins/FriendLinks/links.json。
+
+        文件不存在时保留空的栏目骨架（`DEFAULT_LINK_SECTIONS`），方便以后往里填。
+        """
+        if not FRIEND_LINKS_FILE.exists():
+            return DEFAULT_LINK_SECTIONS if key == "sections" else []
+        try:
+            data = json.loads(FRIEND_LINKS_FILE.read_text(encoding="utf-8")) or {}
+        except (json.JSONDecodeError, OSError):
+            return DEFAULT_LINK_SECTIONS if key == "sections" else []
+        value = data.get(key, DEFAULT_LINK_SECTIONS if key == "sections" else [])
+        return value
+
+    def _static_vars(self) -> dict[str, str]:
+        """从 site_url 推出仓库信息，供 Static 下的页面做变量替换。"""
+        url = (self.config.get("site_url") or "").rstrip("/")
+        owner, repo = "", ""
+        m = re.match(r"https?://([^/]+)\.github\.io(?:/(.+))?$", url)
+        if m:
+            owner = m.group(1)
+            repo = (m.group(2) or f"{owner}.github.io").strip("/")
+        return {
+            "__SITE_TITLE__": self.config.get("site_title", "我的博客"),
+            "__OWNER__": owner,
+            "__REPO__": repo,
+            "__SITE_URL__": url,
+            "__AUTHOR__": self.config.get("author", ""),
+        }
+
+    def _copy_static(self):
+        """把 Static/ 下的文件原样复制到站点根目录（放自定义独立页面用）。"""
+        if not STATIC_DIR.exists():
+            return
+        subs = self._static_vars()
+        n = 0
+        for p in sorted(STATIC_DIR.rglob("*")):
+            if p.is_dir():
+                continue
+            dest = RENDERED_DIR / p.relative_to(STATIC_DIR)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            if p.suffix in (".html", ".htm", ".js", ".json", ".md", ".xml"):
+                text = p.read_text(encoding="utf-8")
+                for k, v in subs.items():
+                    text = text.replace(k, v)
+                dest.write_text(text, encoding="utf-8")
+            else:
+                shutil.copy2(p, dest)
+            n += 1
+        if n:
+            print(f"📄 静态页面: {n} 个 → 站点根目录")
 
     def _count_total_words(self) -> int:
         """统计全站文章总字数（去除 Markdown 标记后的纯文本字数）。"""
@@ -966,8 +975,8 @@ class BlogRenderer:
         pid = self._get_page_id(out_path)
         return {
             "page_id": pid,
-            "viewer_user": vc.get("user", "aaaaa"),
-            "viewer_secret": vc.get("secret", "d1bdf09a"),
+            "viewer_user": vc.get("user", ""),
+            "viewer_secret": vc.get("secret", ""),
             "viewer_counter": vc.get("enable_counter", True),
             "viewer_unique": vc.get("enable_unique", True),
             "viewer_global": vc.get("enable_global", True),

@@ -269,10 +269,7 @@
     if(location.protocol!=='file:')!function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h[0]==='#'||h.indexOf('://')>0||h.indexOf('//')===0||a.target==='_blank')return;e.preventDefault();document.body.classList.add('page-exiting');setTimeout(function(){location.assign(h)},360)})}();
     </script>
     {% if viewer_counter or viewer_unique or viewer_global %}
-    <script>window.ViewerConfig={user:'{{ viewer_user }}',secret:'{{ viewer_secret }}'};</script>
-    {% if viewer_counter %}<script src="{{ relative_root }}js/viewer/counter.js"></script>{% endif %}
-    {% if viewer_unique %}<script src="{{ relative_root }}js/viewer/unique.js"></script>{% endif %}
-    {% if viewer_global %}<script src="{{ relative_root }}js/viewer/global.js"></script>{% endif %}
+    <script src="{{ relative_root }}js/viewer/busuanzi.js"></script>
     <script>
     (function(){
     {% if viewer_global %}Viewer.getGlobalCount().then(function(n){var e=document.getElementById('vGlobal');if(e)e.innerHTML=n.toLocaleString()});{% endif %}

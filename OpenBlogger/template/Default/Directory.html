@@ -86,6 +86,38 @@
         }
         .page-header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
 
+        /* ── 写文章入口（＋ 按钮） ── */
+        .write-btn {
+            display: inline-flex; align-items: center; gap: .35rem;
+            margin-left: .8rem; padding: .3rem .85rem .3rem .6rem;
+            font-size: .88rem; font-weight: 500; text-decoration: none;
+            color: var(--accent); background: var(--tag-bg);
+            border: 1.5px solid var(--border); border-radius: 100px;
+            vertical-align: middle; white-space: nowrap;
+            transition: color .3s, background .3s, border-color .3s, box-shadow .3s, transform .3s;
+        }
+        .write-btn:hover {
+            color: #fff; background: var(--accent); border-color: var(--accent);
+            box-shadow: var(--shadow-hover); transform: translateY(-2px);
+        }
+        .write-btn .plus { font-size: 1.15rem; line-height: 1; font-weight: 700; }
+
+        .fab-write {
+            position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 90;
+            width: 54px; height: 54px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.65rem; font-weight: 300; color: #fff; text-decoration: none;
+            background: var(--accent);
+            box-shadow: 0 6px 20px rgba(177, 116, 62, .45);
+            transition: transform .25s, background .3s;
+        }
+        .fab-write:hover { background: var(--accent-hover); transform: translateY(-3px) scale(1.05); }
+        .fab-write:active { transform: scale(.94); }
+        @media (max-width: 768px) {
+            .fab-write { right: .9rem; bottom: calc(.9rem + env(safe-area-inset-bottom)); width: 50px; height: 50px; font-size: 1.5rem; }
+            .write-btn { margin-left: .4rem; padding: .22rem .7rem .22rem .5rem; font-size: .8rem; }
+        }
+
         /* ── 搜索 ── */
         .search-bar { max-width: var(--max-width); margin: 0 auto 1.5rem; padding: 0 1.5rem; position: relative; z-index: 1; }
         .search-bar input {
@@ -313,6 +345,8 @@
 <body>
     <canvas id="particles"></canvas>
 
+    <a href="{{ relative_root }}compose.html" class="fab-write" title="写一篇新文章" aria-label="写一篇新文章">＋</a>
+
     <nav class="navbar">
         <div class="navbar-inner">
             <a href="{{ relative_root }}index.html" class="brand">{{ site_title }}</a>
@@ -327,7 +361,7 @@
         </div>
     </nav>
 
-    <div class="page-header"><h1>📚 文章目录</h1></div>
+    <div class="page-header"><h1>📚 文章目录<a href="{{ relative_root }}compose.html" class="write-btn" title="写一篇新文章"><span class="plus">＋</span>写今天</a></h1></div>
 
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="搜索文章标题、内容或标签…" autocomplete="off">
@@ -489,10 +523,7 @@
     if(location.protocol!=='file:')!function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h[0]==='#'||h.indexOf('://')>0||h.indexOf('//')===0||a.target==='_blank')return;e.preventDefault();document.body.classList.add('page-exiting');setTimeout(function(){location.assign(h)},360)})}();
     </script>
     {% if viewer_counter or viewer_unique or viewer_global %}
-    <script>window.ViewerConfig={user:'{{ viewer_user }}',secret:'{{ viewer_secret }}'};</script>
-    {% if viewer_counter %}<script src="{{ relative_root }}js/viewer/counter.js"></script>{% endif %}
-    {% if viewer_unique %}<script src="{{ relative_root }}js/viewer/unique.js"></script>{% endif %}
-    {% if viewer_global %}<script src="{{ relative_root }}js/viewer/global.js"></script>{% endif %}
+    <script src="{{ relative_root }}js/viewer/busuanzi.js"></script>
     <script>
     (function(){
     {% if viewer_global %}Viewer.getGlobalCount().then(function(n){var e=document.getElementById('vGlobal');if(e)e.innerHTML=n.toLocaleString()});{% endif %}

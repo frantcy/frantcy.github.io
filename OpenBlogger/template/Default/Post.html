@@ -547,10 +547,7 @@
     </script>
 
     {% if viewer_counter or viewer_unique or viewer_global or viewer_comment %}
-    <script>window.ViewerConfig={user:'{{ viewer_user }}',secret:'{{ viewer_secret }}'};</script>
-    {% if viewer_counter %}<script src="{{ relative_root }}js/viewer/counter.js"></script>{% endif %}
-    {% if viewer_unique %}<script src="{{ relative_root }}js/viewer/unique.js"></script>{% endif %}
-    {% if viewer_global %}<script src="{{ relative_root }}js/viewer/global.js"></script>{% endif %}
+    <script src="{{ relative_root }}js/viewer/busuanzi.js"></script>
     {% if viewer_comment %}<script src="{{ relative_root }}js/viewer/comment.js"></script>{% endif %}
     <script>
     (function(){

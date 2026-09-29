@@ -43,6 +43,20 @@ title: 2026年09月29日
 > 同一天写第二篇？再按一次 `1`，脚本检测到今天的文件已存在，会直接打开而不覆盖。
 > 想换个分类写，用 `.\.venv\Scripts\python.exe new_post.py --dir 随笔`。
 
+## 在手机上写日志
+
+用手机打开博客 → 点底部导航栏 **目录** → 标题右边有个 **＋ 写今天** 按钮
+（右下角还有一个悬浮的圆形 ＋ 按钮，同一个入口）：
+
+1. 第一次用会让你填一次 GitHub 令牌，之后这台手机就记住了
+2. 选日期、分类（决定标签）、写标题和正文 → 点 **保存并上传**
+3. 文件直接以 `Raw/分类/YYYY年MM月DD日.md` 提交到 GitHub 的 `main` 分支
+4. GitHub Actions 自动接管：构建 → 推到 `gh-pages`，**约 1~2 分钟**后线上就能看到
+
+> 令牌只存在你自己手机的浏览器 localStorage 里，不会发到任何第三方。
+> 建议用 **fine-grained token**，只勾本仓库的 `Contents: Read and write`。
+> 要换令牌：写文章页面最下面有「换一个令牌」。
+
 ## Markdown 头部字段
 
 | 字段 | 说明 | 缺省时 |
@@ -60,7 +74,14 @@ title: 2026年09月29日
 
 ## 发布到 GitHub Pages
 
-仓库需开启 Pages，分支选 `gh-pages`。`deploy.bat` 会把 `Rendered/` 用 subtree 推到该分支。
+仓库需开启 Pages，分支选 `gh-pages`。
+
+两种方式发布，推荐第一种：
+
+- **自动（推荐）**：`.github/workflows/deploy.yml` 已经在跑。任何推送到 `main` 的动作
+  （电脑上双击 `deploy.bat` / 控制台 `7`，或手机端写文章上传）都会触发
+  Actions 自动 `build` → 推 `gh-pages`，不用手工操作.
+- **手动**：`控制台.bat` → `7`（源码推 GitHub + 本地构建 + subtree 推 gh-pages）。
 
 第一次部署前，把 `site.json` 里的 `"site_url"` 改成你的真实地址。
 
@@ -70,7 +91,13 @@ title: 2026年09月29日
   `.\.venv\Scripts\python.exe OpenBlogger\Plugins\GitHubActivity\fetch.py --user 你的GitHub用户名`
   在 `site.json` 的 `github_token` 填 token 可提高 API 限额。
 - **站点图标**：放一张 `favicon.jpg` 到 `Image/` 目录。
-- **访问统计 / 评论**：`site.json` 的 `viewer` 段。
+- **访问统计**：`site.json` 的 `viewer` 段，`enable_counter / enable_unique / enable_global`
+  分别对应页脚的「次阅读 / 位访客 / 次全站浏览」。
+  数据来自 **不蒜子**（`busuanzi.js`），按你的域名独立统计，是本站自己的真实数据，
+  不用注册账号；拿不到数据时会显示 `—`，不影响其它功能。
+- **评论**：仍在 `site.json` 的 `viewer` 段，需要 TinyWebDB 账号，
+  填上自己的 `user` / `secret` 并把 `enable_comment` 改回 `true` 即可。
+- **友链**：编辑 `Plugins/FriendLinks/links.json`，格式见文件里的 `_说明`。
 
 ## 命令行等价操作
 

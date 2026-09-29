@@ -7,8 +7,8 @@ var Viewer = Viewer || {};
 
 (function () {
     var API    = 'https://tinywebdb.appinventor.space/api';
-    var USER   = (window.ViewerConfig && window.ViewerConfig.user) || 'aaaaa';
-    var SECRET = (window.ViewerConfig && window.ViewerConfig.secret) || 'd1bdf09a';
+    var USER   = (window.ViewerConfig && window.ViewerConfig.user) || '';
+    var SECRET = (window.ViewerConfig && window.ViewerConfig.secret) || '';
 
     // 读取页面编号，实现多页面独立评论
     function getPageId() {

@@ -14,9 +14,9 @@
         "enable_counter": true,
         "enable_unique": true,
         "enable_global": true,
-        "enable_comment": true,
-        "user": "aaaaa",
-        "secret": "d1bdf09a"
+        "enable_comment": false,
+        "user": "",
+        "secret": ""
     },
     "github_token": ""
 }
