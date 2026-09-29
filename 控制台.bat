@@ -17,8 +17,8 @@ echo   [2] Config    Open site.json
 echo   [3] Preview   Build + Server + Browser
 echo   [4] Build     Render only
 echo   [5] PushSrc   Push main branch
-echo   [6] Deploy    Build + Push gh-pages
-echo   [7] PushAll   Write to GitHub (recommended)
+echo   [6] Deploy    Push main (Actions 自动部署)
+echo   [7] PushAll   Build + Push main (推荐)
 echo   [8] Folder    Open Raw folder
 echo   [9] Exit
 echo.
@@ -81,18 +81,13 @@ goto menu
 
 :deploy
 echo.
-echo Build + Deploy gh-pages...
+echo Build + Push main ... GitHub Actions 会自动部署
 "%PY%" -m OpenBlogger.cli build --force
-type nul > "Rendered\.nojekyll"
-git add -f Rendered/
-git commit -m "gh-pages deploy [auto]" 2>nul
-git subtree split --prefix Rendered -b _ghp_tmp
-git push origin _ghp_tmp:gh-pages --force
-git branch -D _ghp_tmp 2>nul
-git reset --soft HEAD~1 2>nul
-git reset HEAD Rendered/ 2>nul
+git add -A
+git commit -m "site update [auto]"
+git push origin main
 echo.
-echo Deploy done.
+echo Pushed. GitHub Actions will deploy in 1-3 minutes.
 pause
 goto menu
 
@@ -101,19 +96,11 @@ echo.
 set "msg=update"
 set /p "msg=Commit message: "
 "%PY%" -m OpenBlogger.cli build --force
-type nul > "Rendered\.nojekyll"
 git add -A
 git commit -m "!msg!"
 git push origin main
-git add -f Rendered/
-git commit -m "gh-pages deploy [auto]" 2>nul
-git subtree split --prefix Rendered -b _ghp_tmp
-git push origin _ghp_tmp:gh-pages --force
-git branch -D _ghp_tmp 2>nul
-git reset --soft HEAD~1 2>nul
-git reset HEAD Rendered/ 2>nul
 echo.
-echo All done. Your site updates in 1-3 minutes.
+echo All done. GitHub Actions builds and deploys in 1-3 minutes.
 pause
 goto menu
 
