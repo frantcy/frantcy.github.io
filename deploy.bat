@@ -5,19 +5,12 @@ set PYTHONPATH=.
 set PYTHONIOENCODING=utf-8
 if exist ".venv\Scripts\python.exe" (set "PY=.venv\Scripts\python.exe") else (set "PY=python")
 
-echo Building + Deploy to gh-pages...
+echo Build + Push main ... GitHub Actions 会自动构建并发布到 gh-pages
 "%PY%" -m OpenBlogger.cli build --force
 
-rem .nojekyll: 禁止 GitHub Pages 用 Jekyll 二次加工
-type nul > "Rendered\.nojekyll"
-
-git add -f Rendered/
-git commit -m "gh-pages deploy [auto]" 2>nul
-git subtree split --prefix Rendered -b _ghp_tmp
-git push origin _ghp_tmp:gh-pages --force
-git branch -D _ghp_tmp 2>nul
-git reset --soft HEAD~1 2>nul
-git reset HEAD Rendered/ 2>nul
+git add -A
+git commit -m "site update [auto]"
+git push origin main
 echo.
-echo Deploy done.
+echo Pushed. GitHub Actions deploys in 1-3 minutes.
 pause
