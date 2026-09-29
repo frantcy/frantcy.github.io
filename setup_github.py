@@ -245,23 +245,57 @@ def main():
     run(["git", "commit", "-m", "初始化博客：OpenBlogger 骨架 + 空文章数据"], check=False)
     run(["git", "branch", "-M", "main"], check=False)
 
+    # 先把 GitHub 的主机指纹写进 known_hosts，避免首次 SSH 卡在 yes/no 确认上
+    def trust_hosts():
+        kh = Path.home() / ".ssh" / "known_hosts"
+        kh.parent.mkdir(parents=True, exist_ok=True)
+        existing = {l.split()[0] for l in kh.read_text(encoding="utf-8", errors="ignore").splitlines() if l.strip()}
+        new_lines = []
+        for host in ("github.com", "ssh.github.com"):
+            r = subprocess.run(
+                ["ssh-keyscan", "-T", "20", "-t", "rsa,ecdsa,ed25519", "-H", host],
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+            )
+            for line in r.stdout.splitlines():
+                if line.strip() and line.split()[0] not in existing:
+                    new_lines.append(line)
+        if new_lines:
+            with kh.open("a", encoding="utf-8") as f:
+                f.write("\n".join(new_lines) + "\n")
+        return bool(new_lines)
+
+    try:
+        trust_hosts()
+    except Exception:
+        pass
+
     pushed = False
+    working_url = ssh_url
+    attempts = []
     if ssh_ready:
+        attempts.append(("SSH 22 端口", ssh_url))
+        attempts.append(("SSH 443 端口（穿透用）", f"ssh://git@ssh.github.com:443/{login}/{repo_name}.git"))
+    attempts.append(("HTTPS（带 Token）", f"https://{login}:{token}@github.com/{login}/{repo_name}.git"))
+
+    for label, url in attempts:
+        run(["git", "remote", "set-url", "origin", url], check=False)
         r = run(["git", "push", "-u", "origin", "main"], check=False)
-        pushed = r.returncode == 0
-        if not pushed:
-            print(f"   ⚠️  SSH 推送失败，尝试 HTTPS …\n      {scrub(r.stderr.strip())[:300]}")
+        if r.returncode == 0:
+            pushed = True
+            if label.startswith("SSH"):
+                # 干净的地址，长期保留
+                working_url = ssh_url
+                run(["git", "remote", "set-url", "origin", ssh_url], check=False)
+            else:
+                # 含 Token，先留着推完 gh-pages，最后再换掉
+                working_url = url
+            print(f"   ✅ 源码已推送（{label}）")
+            break
+        print(f"   ⚠️  {label} 推送失败：{scrub(r.stderr.strip())[:200]}")
+
     if not pushed:
-        https_url = f"https://{login}:{token}@github.com/{login}/{repo_name}.git"
-        run(["git", "remote", "set-url", "origin", https_url], check=False)
-        r = run(["git", "push", "-u", "origin", "main"], check=False)
-        pushed = r.returncode == 0
-        if not pushed:
-            print(f"❌ 推送失败: {scrub(r.stderr.strip())[:500]}")
-            sys.exit(1)
-        # 推送成功后把含 Token 的远端地址换回干净的 SSH 地址
-        run(["git", "remote", "set-url", "origin", ssh_url], check=False)
-    print("   ✅ 源码已推送")
+        print("❌ 三种通道都推不动。多半是本机到 GitHub 的网络被干扰，换个网络再试一次即可。")
+        sys.exit(1)
 
     # ── Step 6: 构建 + 部署 gh-pages ──
     print("\n[6/6] 构建并部署 gh-pages …")
@@ -279,10 +313,13 @@ def main():
     run(["git", "add", "-f", "Rendered/"], check=False)
     run(["git", "commit", "-m", "gh-pages deploy [auto]"], check=False)
     run(["git", "subtree", "split", "--prefix", "Rendered", "-b", "_ghp_tmp"], check=False)
+    run(["git", "remote", "set-url", "origin", working_url], check=False)
     p = run(["git", "push", "origin", "_ghp_tmp:gh-pages", "--force"], check=False)
     run(["git", "branch", "-D", "_ghp_tmp"], check=False)
     run(["git", "reset", "--soft", "HEAD~1"], check=False)
     run(["git", "reset", "HEAD", "Rendered/"], check=False)
+    # 清掉可能含 Token 的远端地址，确保 .git/config 里不留任何凭据
+    run(["git", "remote", "set-url", "origin", ssh_url], check=False)
     if p.returncode != 0:
         print(f"   ⚠️  gh-pages 推送失败: {scrub(p.stderr.strip())[:300]}")
     else:
