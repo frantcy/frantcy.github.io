@@ -52,6 +52,7 @@ def api(method: str, path: str, token: str, payload: dict = None) -> tuple[int, 
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "OpenBlogger-Setup",   # GitHub 要求带 UA，缺了会被判 401
             **({"Content-Type": "application/json"} if data else {}),
         },
     )
@@ -104,7 +105,9 @@ def read_token_file(path: str) -> str:
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        return line
+        # 支持 "TOKEN=xxx" / "token: xxx" / 直接一行 xxx 三种写法
+        value = re.split(r"[=:]\s*", line, maxsplit=1)[-1].strip().strip('"').strip("'")
+        return value.strip()
     print("❌ Token 文件里没有有效内容（去掉注释后是空的）")
     sys.exit(1)
 
@@ -159,7 +162,7 @@ def main():
     print("=" * 52)
 
     # ── Step 0: Token ──
-    token = ask_secret()
+    token = ask_secret(args.token_file)
     if not token:
         print("❌ 没有 Token，无法继续。")
         sys.exit(1)
