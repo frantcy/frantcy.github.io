@@ -219,6 +219,8 @@
         .comment-card .comment-time { font-size: 0.8rem; color: var(--text-secondary); }
         .comment-card .comment-body { font-size: 0.95rem; color: var(--text); line-height: 1.6; }
         .comment-empty { text-align: center; color: var(--text-secondary); padding: 2rem 0; font-size: 0.95rem; }
+        .giscus-hint { margin-top: 0.9rem; font-size: 0.82rem; color: var(--text-secondary); text-align: center; }
+        .giscus-frame { width: 100%; border: none; }
         .comment-error { text-align: center; color: #c44; padding: 1rem; font-size: 0.9rem; }
 
         @media (max-width: 768px) {
@@ -482,26 +484,17 @@
             </nav>
 
             {% if viewer_comment %}
-            <!-- 评论区（与正文同宽） -->
+            <!-- 评论区：GitHub Discussions（giscus），与正文同宽 -->
             <section class="comment-section">
                 <h3>💬 评论 (<span id="commentCount">0</span>)</h3>
-                <div class="comment-form" id="commentForm">
-                    <div class="row">
-                        <input type="text" id="cName" placeholder="昵称" maxlength="30">
-                        <input type="email" id="cEmail" placeholder="邮箱（选填）">
-                    </div>
-                    <textarea id="cContent" placeholder="说点什么吧…" maxlength="1000"></textarea>
-                    <button id="cSubmit">发表评论</button>
-                </div>
-                <div class="comment-list" id="commentList">
-                    <div class="comment-empty">加载中…</div>
-                </div>
+                <div class="giscus"></div>
+                <p class="giscus-hint">评论存在 GitHub Discussions 里，需要用 GitHub 账号登录才能发言。</p>
             </section>
             {% endif %}
         </main>
 
         <!-- 右栏：弹幕 -->
-        {% if viewer_comment %}
+        {% if viewer_danmaku %}
         <aside class="danmaku-col" id="danmakuBar">
             <div class="danmaku-sticky">
                 <div class="danmaku-widget">
@@ -548,61 +541,60 @@
 
     {% if viewer_counter or viewer_unique or viewer_global or viewer_comment %}
     <script src="{{ relative_root }}js/viewer/busuanzi.js"></script>
-    {% if viewer_comment %}<script src="{{ relative_root }}js/viewer/comment.js"></script>{% endif %}
     <script>
     (function(){
         {% if viewer_global %}Viewer.getGlobalCount().then(function(n){var e=document.getElementById('vGlobal');if(e)e.innerHTML=n.toLocaleString()});{% endif %}
         {% if viewer_counter %}getVisitCount().then(function(n){var e=document.getElementById('vCounter');if(e)e.innerHTML=n.toLocaleString()});{% endif %}
         {% if viewer_unique %}Viewer.getUniqueCount().then(function(r){var e=document.getElementById('vUnique');if(e)e.innerHTML=r.count.toLocaleString()});{% endif %}
         {% if viewer_comment %}
-        /* ═══════════ 评论系统 ═══════════ */
-        var list=document.getElementById('commentList'),countEl=document.getElementById('commentCount'),
-            form=document.getElementById('commentForm'),nameEl=document.getElementById('cName'),
-            emailEl=document.getElementById('cEmail'),contentEl=document.getElementById('cContent'),
-            submitBtn=document.getElementById('cSubmit');
-        function fmtTime(iso){var d=new Date(iso),p=function(n){return n<10?'0'+n:n};
-            return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}
-        function renderComments(comments){
-            if(!comments||!comments.length){list.innerHTML='<div class="comment-empty">还没有评论，来说点什么吧 🎉</div>';countEl.textContent='0';return}
-            countEl.textContent=comments.length;
-            list.innerHTML=comments.slice().reverse().map(function(c){
-                return '<div class="comment-card"><div class="comment-header"><span class="comment-author">'+
-                    (c.name||'匿名').replace(/</g,'&lt;')+'</span><span class="comment-time">'+fmtTime(c.time)+'</span></div>'+
-                    '<div class="comment-body">'+(c.content||'').replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</div></div>';
-            }).join('');
-        }
-        Viewer.loadComments().then(renderComments).catch(function(){list.innerHTML='<div class="comment-error">评论加载失败，请稍后再试</div>'});
-        /* 弹幕：当前页评论滚动 */
-        var danmakuScroll=document.getElementById('danmakuScroll');
-        if(danmakuScroll){
-            function renderDanmaku(comments){
-                if(!comments||!comments.length){
-                    danmakuScroll.innerHTML='<div class="danmaku-item"><div class="dm-author">暂无发言…</div><div class="dm-body">来评论区说点什么吧</div></div>';
-                    return;
+        /* ═══════════ 评论系统：GitHub Discussions（giscus） ═══════════ */
+        (function(){
+            var isDark = document.documentElement.classList.contains('dark');
+            var s = document.createElement('script');
+            s.src = 'https://giscus.app/client.js';
+            s.async = true;
+            s.crossOrigin = 'anonymous';
+            s.setAttribute('data-repo',         '{{ giscus_repo }}');
+            s.setAttribute('data-repo-id',      '{{ giscus_repo_id }}');
+            s.setAttribute('data-category',     '{{ giscus_category }}');
+            s.setAttribute('data-category-id',  '{{ giscus_category_id }}');
+            s.setAttribute('data-mapping',      '{{ giscus_mapping }}');
+            s.setAttribute('data-strict',       '0');
+            s.setAttribute('data-reactions-enabled', '1');
+            s.setAttribute('data-emit-metadata', '1');
+            s.setAttribute('data-input-position', 'bottom');
+            s.setAttribute('data-theme',        isDark ? 'dark' : 'light');
+            s.setAttribute('data-lang',         '{{ giscus_lang }}');
+            s.setAttribute('data-loading',      'lazy');
+            var box = document.querySelector('.giscus');
+            (box ? box.parentNode : document.body).appendChild(s);
+
+            /* 站点深浅色切换时同步 giscus 主题 */
+            function syncTheme(){
+                var f = document.querySelector('iframe.giscus-frame');
+                if (f && f.contentWindow) {
+                    f.contentWindow.postMessage({
+                        giscus: { setConfig: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' } }
+                    }, 'https://giscus.app');
                 }
-                var items=comments.map(function(c){
-                    var name=(c.name||'匿名').replace(/</g,'&lt;');
-                    var body=(c.content||'').replace(/</g,'&lt;').substring(0,80);
-                    return '<div class="danmaku-item"><div class="dm-author">'+name+'</div><div class="dm-body">'+body+'</div></div>';
-                });
-                danmakuScroll.innerHTML=items.concat(items).join('');  // 翻倍无缝循环
             }
-            Viewer.loadComments().then(renderDanmaku).catch(function(){});
-            // 提交评论后 3s 刷新弹幕
-            submitBtn.addEventListener('click',function(){
-                setTimeout(function(){Viewer.loadComments().then(renderDanmaku).catch(function(){});},3000);
+            var tg = document.getElementById('themeToggle');
+            if (tg) tg.addEventListener('click', function(){ setTimeout(syncTheme, 80); });
+
+            /* giscus 回传讨论信息 → 更新评论数 */
+            addEventListener('message', function(e){
+                if (e.origin !== 'https://giscus.app') return;
+                var d = e.data && e.data.giscus;
+                if (!d) return;
+                var c = document.getElementById('commentCount');
+                if (c && d.discussion && typeof d.discussion.totalCommentCount === 'number') {
+                    c.textContent = d.discussion.totalCommentCount - (d.discussion.totalReplyCount || 0);
+                }
+                if (d.error) {
+                    console.warn('giscus:', d.error);
+                }
             });
-        }
-        submitBtn.addEventListener('click',function(){
-            var name=nameEl.value.trim(),content=contentEl.value.trim();
-            if(!name){nameEl.focus();return}
-            if(!content){contentEl.focus();return}
-            submitBtn.disabled=true;submitBtn.textContent='提交中…';
-            Viewer.submitComment({name:name,email:emailEl.value.trim(),content:content}).then(function(c){
-                contentEl.value='';submitBtn.disabled=false;submitBtn.textContent='发表评论';
-                Viewer.loadComments().then(renderComments);
-            }).catch(function(){submitBtn.disabled=false;submitBtn.textContent='发表评论';alert('提交失败，请稍后重试')});
-        });
+        })();
         {% endif %}
     })();
     </script>

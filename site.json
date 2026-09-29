@@ -14,9 +14,18 @@
         "enable_counter": true,
         "enable_unique": true,
         "enable_global": true,
-        "enable_comment": false,
+        "enable_comment": true,
+        "enable_danmaku": false,
         "user": "",
         "secret": ""
+    },
+    "giscus": {
+        "repo": "frantcy/frantcy.github.io",
+        "repo_id": "R_kgDOUyQ6Gw",
+        "category": "Announcements",
+        "category_id": "DIC_kwDOUyQ6G84DGpwa",
+        "mapping": "pathname",
+        "lang": "zh-CN"
     },
     "github_token": ""
 }

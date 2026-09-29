@@ -63,9 +63,18 @@ DEFAULT_CONFIG = {
         "enable_counter": True,
         "enable_unique": True,
         "enable_global": True,
-        "enable_comment": False,
+        "enable_comment": True,
+        "enable_danmaku": False,
         "user": "",
         "secret": "",
+    },
+    "giscus": {
+        "repo": "",
+        "repo_id": "",
+        "category": "Announcements",
+        "category_id": "",
+        "mapping": "pathname",
+        "lang": "zh-CN",
     },
 }
 
@@ -972,6 +981,7 @@ class BlogRenderer:
     def _viewer_context(self, out_path: Path) -> dict:
         """构建 Viewer 相关的模板上下文。"""
         vc = self._viewer_config()
+        gc = self.config.get("giscus", {})
         pid = self._get_page_id(out_path)
         return {
             "page_id": pid,
@@ -981,6 +991,14 @@ class BlogRenderer:
             "viewer_unique": vc.get("enable_unique", True),
             "viewer_global": vc.get("enable_global", True),
             "viewer_comment": vc.get("enable_comment", True),
+            # 弹幕栏需要能读到评论正文，giscus 在跨域 iframe 里读不到，所以默认关
+            "viewer_danmaku": vc.get("enable_danmaku", False),
+            "giscus_repo": gc.get("repo", ""),
+            "giscus_repo_id": gc.get("repo_id", ""),
+            "giscus_category": gc.get("category", "Announcements"),
+            "giscus_category_id": gc.get("category_id", ""),
+            "giscus_mapping": gc.get("mapping", "pathname"),
+            "giscus_lang": gc.get("lang", "zh-CN"),
         }
 
     # ═══════════════════════════════════════════════
