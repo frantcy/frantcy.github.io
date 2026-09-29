@@ -1,1 +1,419 @@
-{"meta":{"fetched_at":"","summary":{}},"timeline":[],"by_repo":{}}
+{
+  "meta": {
+    "user": "frantcy",
+    "fetched_at": "2026-09-29T10:24:58.412377+00:00",
+    "summary": {
+      "total_events": 13,
+      "total_repos": 2,
+      "total_commits": 10,
+      "by_type": [
+        {
+          "type": "PushEvent",
+          "count": 10
+        },
+        {
+          "type": "CreateEvent",
+          "count": 3
+        }
+      ],
+      "repos": [
+        "frantcy/AI-Journey",
+        "frantcy/frantcy.github.io"
+      ]
+    }
+  },
+  "by_repo": {
+    "frantcy/AI-Journey": {
+      "url": "https://github.com/frantcy/AI-Journey",
+      "event_count": 3,
+      "events": [
+        {
+          "type": "CreateEvent",
+          "icon": "🆕",
+          "label": "🆕 创建了",
+          "repo": "frantcy/AI-Journey",
+          "repo_url": "https://github.com/frantcy/AI-Journey",
+          "time": "2026-09-19 08:51 UTC",
+          "timestamp": "2026-09-19T08:51:12+00:00",
+          "id": "21571032057",
+          "ref_type": "branch",
+          "ref": "main",
+          "detail": "branch main"
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/AI-Journey",
+          "repo_url": "https://github.com/frantcy/AI-Journey",
+          "time": "2026-09-19 04:11 UTC",
+          "timestamp": "2026-09-19T04:11:44+00:00",
+          "id": "8757f12d",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "remove .gitignore"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/AI-Journey",
+          "repo_url": "https://github.com/frantcy/AI-Journey",
+          "time": "2026-09-19 02:03 UTC",
+          "timestamp": "2026-09-19T02:03:54+00:00",
+          "id": "7bda6006",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "init: create AI Journey"
+          ]
+        }
+      ]
+    },
+    "frantcy/frantcy.github.io": {
+      "url": "https://github.com/frantcy/frantcy.github.io",
+      "event_count": 10,
+      "events": [
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 10:12 UTC",
+          "timestamp": "2026-09-29T10:12:32+00:00",
+          "id": "0e2da32b",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "新增 new_post.py 一键写日记；控制台菜单重排；deploy 加 .nojekyll"
+          ]
+        },
+        {
+          "type": "CreateEvent",
+          "icon": "🆕",
+          "label": "🆕 创建了",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 10:05 UTC",
+          "timestamp": "2026-09-29T10:05:54+00:00",
+          "id": "22469297330",
+          "ref_type": "branch",
+          "ref": "gh-pages",
+          "detail": "branch gh-pages"
+        },
+        {
+          "type": "CreateEvent",
+          "icon": "🆕",
+          "label": "🆕 创建了",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 10:05 UTC",
+          "timestamp": "2026-09-29T10:05:20+00:00",
+          "id": "22469256901",
+          "ref_type": "branch",
+          "ref": "main",
+          "detail": "branch main"
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 10:05 UTC",
+          "timestamp": "2026-09-29T10:05:04+00:00",
+          "id": "f3916e04",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "初始化博客：OpenBlogger 骨架 + 空文章数据"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 10:03 UTC",
+          "timestamp": "2026-09-29T10:03:01+00:00",
+          "id": "5ae18fbf",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "初始化博客：OpenBlogger 骨架 + 空文章数据"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 09:45 UTC",
+          "timestamp": "2026-09-29T09:45:34+00:00",
+          "id": "01916f16",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "初始化博客：OpenBlogger 骨架 + 空文章数据"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 09:42 UTC",
+          "timestamp": "2026-09-29T09:42:50+00:00",
+          "id": "c51a00f2",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "初始化博客：OpenBlogger 骨架 + 空文章数据"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 07:43 UTC",
+          "timestamp": "2026-09-29T07:43:48+00:00",
+          "id": "c238581e",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "setup_github：预置主机指纹 + SSH22/SSH443/HTTPS 三级推送兜底 + 用完清理含凭据远端地址"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 07:34 UTC",
+          "timestamp": "2026-09-29T07:34:57+00:00",
+          "id": "c89e303e",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "新增 setup_github.py：Token/SSH 一键建仓、推源码、部署 gh-pages"
+          ]
+        },
+        {
+          "type": "PushEvent",
+          "icon": "📤",
+          "label": "📤 推送了代码",
+          "repo": "frantcy/frantcy.github.io",
+          "repo_url": "https://github.com/frantcy/frantcy.github.io",
+          "time": "2026-09-29 07:16 UTC",
+          "timestamp": "2026-09-29T07:16:04+00:00",
+          "id": "8ef2f6a4",
+          "ref": "",
+          "commit_count": 1,
+          "messages": [
+            "初始化博客：OpenBlogger 骨架 + 空文章数据"
+          ]
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 10:12 UTC",
+      "timestamp": "2026-09-29T10:12:32+00:00",
+      "id": "0e2da32b",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "新增 new_post.py 一键写日记；控制台菜单重排；deploy 加 .nojekyll"
+      ]
+    },
+    {
+      "type": "CreateEvent",
+      "icon": "🆕",
+      "label": "🆕 创建了",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 10:05 UTC",
+      "timestamp": "2026-09-29T10:05:54+00:00",
+      "id": "22469297330",
+      "ref_type": "branch",
+      "ref": "gh-pages",
+      "detail": "branch gh-pages"
+    },
+    {
+      "type": "CreateEvent",
+      "icon": "🆕",
+      "label": "🆕 创建了",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 10:05 UTC",
+      "timestamp": "2026-09-29T10:05:20+00:00",
+      "id": "22469256901",
+      "ref_type": "branch",
+      "ref": "main",
+      "detail": "branch main"
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 10:05 UTC",
+      "timestamp": "2026-09-29T10:05:04+00:00",
+      "id": "f3916e04",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "初始化博客：OpenBlogger 骨架 + 空文章数据"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 10:03 UTC",
+      "timestamp": "2026-09-29T10:03:01+00:00",
+      "id": "5ae18fbf",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "初始化博客：OpenBlogger 骨架 + 空文章数据"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 09:45 UTC",
+      "timestamp": "2026-09-29T09:45:34+00:00",
+      "id": "01916f16",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "初始化博客：OpenBlogger 骨架 + 空文章数据"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 09:42 UTC",
+      "timestamp": "2026-09-29T09:42:50+00:00",
+      "id": "c51a00f2",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "初始化博客：OpenBlogger 骨架 + 空文章数据"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 07:43 UTC",
+      "timestamp": "2026-09-29T07:43:48+00:00",
+      "id": "c238581e",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "setup_github：预置主机指纹 + SSH22/SSH443/HTTPS 三级推送兜底 + 用完清理含凭据远端地址"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 07:34 UTC",
+      "timestamp": "2026-09-29T07:34:57+00:00",
+      "id": "c89e303e",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "新增 setup_github.py：Token/SSH 一键建仓、推源码、部署 gh-pages"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/frantcy.github.io",
+      "repo_url": "https://github.com/frantcy/frantcy.github.io",
+      "time": "2026-09-29 07:16 UTC",
+      "timestamp": "2026-09-29T07:16:04+00:00",
+      "id": "8ef2f6a4",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "初始化博客：OpenBlogger 骨架 + 空文章数据"
+      ]
+    },
+    {
+      "type": "CreateEvent",
+      "icon": "🆕",
+      "label": "🆕 创建了",
+      "repo": "frantcy/AI-Journey",
+      "repo_url": "https://github.com/frantcy/AI-Journey",
+      "time": "2026-09-19 08:51 UTC",
+      "timestamp": "2026-09-19T08:51:12+00:00",
+      "id": "21571032057",
+      "ref_type": "branch",
+      "ref": "main",
+      "detail": "branch main"
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/AI-Journey",
+      "repo_url": "https://github.com/frantcy/AI-Journey",
+      "time": "2026-09-19 04:11 UTC",
+      "timestamp": "2026-09-19T04:11:44+00:00",
+      "id": "8757f12d",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "remove .gitignore"
+      ]
+    },
+    {
+      "type": "PushEvent",
+      "icon": "📤",
+      "label": "📤 推送了代码",
+      "repo": "frantcy/AI-Journey",
+      "repo_url": "https://github.com/frantcy/AI-Journey",
+      "time": "2026-09-19 02:03 UTC",
+      "timestamp": "2026-09-19T02:03:54+00:00",
+      "id": "7bda6006",
+      "ref": "",
+      "commit_count": 1,
+      "messages": [
+        "init: create AI Journey"
+      ]
+    }
+  ]
+}
