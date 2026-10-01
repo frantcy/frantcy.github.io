@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../images/favicon.jpg">
+    <meta name="x-viewer-page-id" content="1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function(){var s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();</script>
+    <title>2026年10月01日 — Frantcy 的日常</title>
+    <style>
+        :root {
+            --bg: #fdfbf7; --card-bg: #ffffff; --text: #2c2416; --text-secondary: #6b5e4a;
+            --accent: #b1743e; --accent-hover: #8b5a2e; --border: #e5ddd0; --tag-bg: #f5efe3;
+            --code-bg: #f4f0e8; --shadow: 0 1px 3px rgba(44,36,22,0.06);
+            --shadow-hover: 0 8px 24px rgba(44,36,22,0.12); --radius: 10px;
+            --max-width: 1150px; --sidebar-width: 210px; --danmaku-width: 190px;
+            --nav-blur: blur(12px); --particle-color: 180,160,140;
+        }
+        html.dark {
+            --bg: #1a1a1f; --card-bg: #25252b; --text: #d4d0c8; --text-secondary: #9a9488;
+            --accent: #d4945a; --accent-hover: #e8a86e; --border: #36363d;
+            --tag-bg: #2e2e35; --code-bg: #2e2e35;
+            --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-hover: 0 8px 24px rgba(0,0,0,0.35);
+            --particle-color: 120,110,100;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.7;
+            min-height: 100vh; display: flex; flex-direction: column;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; }
+        html.dark #particles { opacity: 0.25; }
+
+        /* ── 阅读进度条 ── */
+        .reading-progress {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, var(--accent), #d4945a);
+            z-index: 1000; width: 0%;
+            transition: width 0.1s linear;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .navbar {
+            background: var(--card-bg); border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem; position: sticky; top: 0; z-index: 100;
+            box-shadow: var(--shadow); transition: background 0.4s, border 0.4s;
+            backdrop-filter: var(--nav-blur);
+            background: color-mix(in srgb, var(--card-bg) 85%, transparent);
+        }
+        .navbar-inner { max-width: var(--max-width); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+        .navbar .brand { font-size: 1.25rem; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.02em; transition: color 0.3s; }
+        .navbar .brand:hover { color: var(--accent); }
+        .nav-links { display: flex; gap: 1.2rem; list-style: none; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+        .theme-toggle {
+            background: none; border: 1.5px solid var(--border); color: var(--text-secondary);
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; margin-left: 0.25rem;
+        }
+        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+
+        /* ── 文章头部 ── */
+        .article-header {
+            text-align: center; padding: 3.5rem 1.5rem 1.5rem;
+            max-width: var(--max-width); margin: 0 auto; position: relative; z-index: 1;
+        }
+        .article-header h1 {
+            font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.3; margin-bottom: 1rem;
+            font-family: "Georgia","Noto Serif SC","Source Han Serif SC",serif;
+        }
+        .article-meta { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--text-secondary); }
+        .article-meta .meta-divider { width: 4px; height: 4px; background: var(--border); border-radius: 50%; transition: background 0.4s; }
+        .article-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; margin-top: 0.75rem; }
+        .article-tags .tag {
+            display: inline-block; background: var(--tag-bg); color: var(--accent);
+            font-size: 0.8rem; padding: 0.22rem 0.75rem; border-radius: 100px;
+            text-decoration: none; transition: all 0.3s;
+        }
+        .article-tags .tag:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+
+        /* ── 正文 ── */
+        .article-content { padding: 0 0 1.5rem; }
+        .prose { font-size: 1.08rem; line-height: 1.85; color: var(--text); }
+        .prose h1,.prose h2,.prose h3,.prose h4 {
+            margin-top: 2em; margin-bottom: 0.6em; font-weight: 700; line-height: 1.3;
+            font-family: "Georgia","Noto Serif SC","Source Han Serif SC",serif;
+        }
+        .prose h1 { font-size: 1.8rem; }
+        .prose h2 { font-size: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.3em; transition: border 0.4s; }
+        .prose h3 { font-size: 1.25rem; }
+        .prose h4 { font-size: 1.1rem; }
+        .prose p { margin-bottom: 1.2em; }
+        .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.3s; }
+        .prose a:hover { color: var(--accent-hover); }
+        .prose strong { font-weight: 700; }
+        .prose blockquote {
+            margin: 1.5em 0; padding: 0.85rem 1.35rem;
+            border-left: 4px solid var(--accent);
+            background: var(--tag-bg); border-radius: 0 var(--radius) var(--radius) 0;
+            color: var(--text-secondary); transition: background 0.4s;
+        }
+        .prose blockquote p { margin-bottom: 0.5em; }
+        .prose blockquote p:last-child { margin-bottom: 0; }
+        .prose ul,.prose ol { margin: 1em 0; padding-left: 1.5em; }
+        .prose li { margin-bottom: 0.35em; }
+        .prose img, .prose video { max-width: 100%; height: auto; border-radius: var(--radius); margin: 1.5em 0; box-shadow: var(--shadow); }
+        .prose img { cursor: zoom-in; transition: transform 0.3s, box-shadow 0.3s; }
+        .prose img:hover { transform: scale(1.01); box-shadow: var(--shadow-hover); }
+        .prose hr { border: none; border-top: 2px solid var(--border); margin: 2em 0; transition: border 0.4s; }
+        .prose table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 0.95rem; }
+        .prose th,.prose td { border: 1px solid var(--border); padding: 0.6rem 1rem; text-align: left; transition: border 0.4s; }
+        .prose th { background: var(--tag-bg); font-weight: 600; transition: background 0.4s; }
+        .prose code {
+            background: var(--code-bg); padding: 0.15em 0.4em; border-radius: 4px;
+            font-size: 0.9em; font-family: "SF Mono","Fira Code","Consolas","Menlo",monospace;
+            color: var(--accent); transition: background 0.4s;
+        }
+        .prose pre {
+            background: #2c2416; color: #f5efe3; padding: 1.25rem 1.5rem;
+            border-radius: var(--radius); overflow-x: auto; margin: 1.5em 0;
+            font-size: 0.9rem; line-height: 1.6;
+        }
+        html.dark .prose pre { background: #111115; }
+        .prose pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+
+        /* ── 文章导航 ── */
+        .article-nav { margin: 0 0 1.5rem; display: flex; justify-content: space-between; gap: 1rem; }
+        .article-nav a {
+            flex: 1; padding: 1.1rem 1.35rem; border: 1px solid var(--border);
+            border-radius: var(--radius); text-decoration: none; color: var(--text);
+            background: var(--card-bg);
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .article-nav a:hover { border-color: var(--accent); box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+        .article-nav .nav-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+        .article-nav .nav-title { font-weight: 600; font-size: 0.95rem; }
+        .article-nav .nav-prev { text-align: left; }
+        .article-nav .nav-next { text-align: right; margin-left: auto; }
+        .article-nav .nav-end {
+            flex: 1; padding: 1.1rem 1.35rem; border: 1px solid var(--border);
+            border-radius: var(--radius); color: var(--text-secondary); opacity: 0.5;
+            cursor: default; transition: border 0.4s;
+        }
+
+        /* ── 返回顶部 ── */
+        .back-to-top {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--card-bg); border: 2px solid var(--border);
+            color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: translateY(20px); pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: var(--shadow);
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+        .footer { text-align: center; padding: 2rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: auto; position: relative; z-index: 1; transition: border 0.4s; }
+        .footer span { color: var(--accent); }
+        .footer-stats {
+            display: flex; justify-content: center; align-items: center; gap: 0.6rem;
+            flex-wrap: wrap; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text-secondary);
+        }
+        .footer-stats .stat { display: inline-flex; align-items: center; gap: 0.2rem; }
+        .footer-stats .stat strong { color: var(--accent); font-weight: 700; }
+        .footer-stats .stat-divider { color: var(--border); }
+
+        /* ── 评论区 ── */
+        .comment-section {
+            margin: 0 0 2rem; padding: 1.25rem 0 0;
+            border-top: 1px solid var(--border); transition: border 0.4s;
+        }
+        .comment-section h3 {
+            font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;
+            padding-bottom: 0.5rem; border-bottom: 2px solid var(--border);
+            transition: border 0.4s;
+        }
+        .comment-form { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+        .comment-form .row { display: flex; gap: 0.7rem; }
+        .comment-form input, .comment-form textarea {
+            flex: 1; padding: 0.65rem 1rem; font-size: 0.95rem; font-family: inherit;
+            border: 1px solid var(--border); border-radius: var(--radius);
+            background: var(--card-bg); color: var(--text); outline: none;
+            transition: all 0.3s;
+        }
+        .comment-form input:focus, .comment-form textarea:focus {
+            border-color: var(--accent); box-shadow: 0 0 0 3px rgba(177,116,62,0.08);
+        }
+        .comment-form textarea { min-height: 100px; resize: vertical; }
+        .comment-form button {
+            align-self: flex-end; padding: 0.6rem 1.8rem;
+            background: var(--accent); color: #fff; border: none;
+            border-radius: 100px; font-size: 0.95rem; cursor: pointer;
+            transition: all 0.3s; font-weight: 600;
+        }
+        .comment-form button:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .comment-form button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .comment-list { display: flex; flex-direction: column; gap: 1rem; }
+        .comment-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1rem 1.25rem;
+            transition: background 0.4s, border 0.4s;
+        }
+        .comment-card .comment-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .comment-card .comment-author { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
+        .comment-card .comment-time { font-size: 0.8rem; color: var(--text-secondary); }
+        .comment-card .comment-body { font-size: 0.95rem; color: var(--text); line-height: 1.6; }
+        .comment-empty { text-align: center; color: var(--text-secondary); padding: 2rem 0; font-size: 0.95rem; }
+        .giscus-hint { margin-top: 0.9rem; font-size: 0.82rem; color: var(--text-secondary); text-align: center; }
+        .giscus-frame { width: 100%; border: none; }
+        .comment-error { text-align: center; color: #c44; padding: 1rem; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            :root { --content-width: 100%; --sidebar-width: 100%; --danmaku-width: 100%; }
+            body { font-size: 0.95rem; }
+            .navbar { padding: 0 0.8rem; }
+            .navbar .brand { font-size: 1.1rem; }
+            .nav-links { gap: 0.6rem; }
+            .nav-links a { font-size: 0.85rem; }
+            .theme-toggle { width: 30px; height: 30px; font-size: 0.9rem; }
+            .article-header { padding: 2rem 1rem 1rem; }
+            .article-header h1 { font-size: 1.4rem; line-height: 1.35; }
+            .article-meta { font-size: 0.8rem; gap: 0.5rem; }
+            .prose { font-size: 0.95rem; line-height: 1.75; }
+            .prose h2 { font-size: 1.25rem; }
+            .prose h3 { font-size: 1.1rem; }
+            .article-nav { flex-direction: column; }
+            .article-nav a { padding: 0.8rem 1rem; }
+            .article-nav .nav-title { font-size: 0.88rem; }
+            .back-to-top { bottom: 1rem; right: 1rem; width: 36px; height: 36px; }
+            .main-layout { flex-direction: column; padding: 0 0.75rem 0.8rem; gap: 1rem; }
+            .sidebar, .danmaku-col { flex: auto; }
+            .sidebar-sticky, .danmaku-sticky { position: static; }
+            .sidebar-widget { padding: 0.8rem 1rem; }
+            .danmaku-col .danmaku-widget { max-height: 200px; }
+            .comment-section { padding: 0.8rem 0 0; }
+            .comment-form input, .comment-form textarea { font-size: 0.9rem; padding: 0.5rem 0.8rem; }
+            .comment-form button { padding: 0.5rem 1.2rem; font-size: 0.9rem; }
+            .footer { padding: 1.2rem 1rem; font-size: 0.78rem; }
+            .footer-stats { font-size: 0.78rem; gap: 0.4rem; }
+        }
+
+        /* ── 双栏/三栏布局 ── */
+        .main-layout {
+            max-width: var(--max-width); margin: 0 auto;
+            padding: 0 1.5rem 1rem; display: flex; gap: 1.5rem;
+            flex: 1; width: 100%; position: relative; z-index: 1;
+        }
+        .content-main { flex: 1; min-width: 0; }
+
+        /* ── 侧栏 ── */
+        .sidebar { flex: 0 0 var(--sidebar-width); display: flex; flex-direction: column; gap: 1rem; }
+        .sidebar-sticky { position: sticky; top: calc(56px + 1rem); display: flex; flex-direction: column; gap: 1rem; }
+        .sidebar-widget {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1rem 1.25rem;
+            box-shadow: var(--shadow); transition: background 0.4s, border 0.4s;
+        }
+        .sidebar-widget .widget-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin-bottom: 0.6rem; padding-bottom: 0.4rem;
+            border-bottom: 1.5px solid var(--border); transition: border 0.4s;
+        }
+        .widget-stats { display: flex; flex-direction: column; gap: 0.4rem; }
+        .widget-stats .stat-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem; color: var(--text-secondary);
+        }
+        .widget-stats .stat-row strong { color: var(--accent); font-size: 1rem; }
+        .widget-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .widget-tags .tag-pill {
+            display: inline-block; background: var(--tag-bg); color: var(--accent);
+            font-size: 0.78rem; padding: 0.3rem 0.7rem; border-radius: 100px;
+            text-decoration: none; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .widget-tags .tag-pill:hover {
+            background: var(--accent); color: #fff;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* ── 弹幕栏 ── */
+        .danmaku-col {
+            flex: 0 0 var(--danmaku-width);
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .danmaku-col .danmaku-sticky {
+            position: sticky; top: calc(56px + 1rem);
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .danmaku-col .danmaku-widget {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1rem 1rem;
+            box-shadow: var(--shadow); transition: background 0.4s, border 0.4s;
+            max-height: 360px;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .danmaku-col .widget-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin-bottom: 0.5rem; padding-bottom: 0.35rem;
+            border-bottom: 1.5px solid var(--border); text-align: center;
+            transition: border 0.4s;
+        }
+        .danmaku-col .danmaku-track {
+            flex: 1; overflow: hidden; position: relative;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+        .danmaku-col .danmaku-scroll { animation: danmakuFlow 22s linear infinite; }
+        .danmaku-col .danmaku-scroll:hover { animation-play-state: paused; }
+        .danmaku-col .danmaku-item {
+            padding: 0.4rem 0.5rem; margin-bottom: 0.35rem;
+            background: var(--tag-bg); border-radius: 5px;
+            font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary);
+            transition: background 0.3s;
+        }
+        .danmaku-col .danmaku-item .dm-author { font-weight: 600; color: var(--accent); font-size: 0.68rem; margin-bottom: 0.08rem; }
+        .danmaku-col .danmaku-item .dm-body { word-break: break-all; }
+        @keyframes danmakuFlow {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        /* ═══════════ 页面转场 ═══════════ */
+        body.page-exiting .navbar         { animation: exitUp   0.32s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .article-header { animation: exitUp   0.30s 0.03s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .sidebar        { animation: exitLeft  0.28s 0.06s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .content-main   { animation: exitDown  0.30s 0.08s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .danmaku-col    { animation: exitRight 0.28s 0.06s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .footer         { animation: exitDown 0.28s 0.10s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .back-to-top    { animation: exitDown 0.20s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting::after { content:''; position:fixed; inset:0; background:var(--bg); z-index:9999; animation: fadeIn 0.25s 0.2s both; }
+
+        @keyframes exitUp    { to { opacity:0; transform:translateY(-130%); } }
+        @keyframes exitDown  { to { opacity:0; transform:translateY(130%); } }
+        @keyframes exitLeft  { to { opacity:0; transform:translateX(-120%); } }
+        @keyframes exitRight { to { opacity:0; transform:translateX(120%); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        body.page-entering .navbar         { animation: enterDown  0.55s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .article-header { animation: enterDown  0.50s 0.06s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .sidebar        { animation: enterLeft  0.50s 0.12s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .content-main   { animation: enterUp    0.52s 0.16s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .danmaku-col    { animation: enterRight 0.50s 0.12s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .sidebar-widget { animation: enterPop   0.40s 0.18s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .danmaku-widget { animation: enterPop   0.40s 0.18s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .footer         { animation: enterUp    0.45s 0.24s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .back-to-top    { animation: enterPop   0.35s 0.28s cubic-bezier(0.22,0.61,0.36,1) both; }
+
+        @keyframes enterDown {
+            0%   { opacity:0; transform:translateY(-100%); }
+            55%  { opacity:1; transform:translateY(12px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes enterUp {
+            0%   { opacity:0; transform:translateY(80px); }
+            55%  { opacity:1; transform:translateY(-8px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes enterLeft {
+            0%   { opacity:0; transform:translateX(-80px); }
+            55%  { opacity:1; transform:translateX(8px); }
+            100% { opacity:1; transform:translateX(0); }
+        }
+        @keyframes enterRight {
+            0%   { opacity:0; transform:translateX(80px); }
+            55%  { opacity:1; transform:translateX(-8px); }
+            100% { opacity:1; transform:translateX(0); }
+        }
+        @keyframes enterPop {
+            0%   { opacity:0; transform:scale(0.4); }
+            55%  { opacity:1; transform:scale(1.12); }
+            100% { opacity:1; transform:scale(1); }
+        }
+    </style>
+<script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <!-- 阅读进度条 -->
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <canvas id="particles"></canvas>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="../index.html" class="brand">Frantcy 的日常</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="../directory.html">目录</a></li>
+                <li><a href="../tags.html">标签</a></li>
+                <li><a href="../resources.html">资源</a></li>
+                <li><a href="../friendlinks.html">友链</a></li>
+                <li><button class="theme-toggle" id="themeToggle" title="切换深色/浅色模式" aria-label="切换颜色模式">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="article-header">
+        <h1>2026年10月01日</h1>
+        <div class="article-meta">
+            <span>📅 2026年10月01日</span>
+            <span class="meta-divider"></span><span>✍️ Frantcy</span>
+        </div>
+        
+        <div class="article-tags">
+            
+            <a href="../directory.html?tag=%E9%9A%8F%E7%AC%94" class="tag">随笔</a>
+            
+        </div>
+        
+    </header>
+
+    <div class="main-layout">
+        <!-- 左栏：侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-sticky">
+                <div class="sidebar-widget">
+                    <div class="widget-title">📊 站点统计</div>
+                    <div class="widget-stats">
+                        <div class="stat-row"><span>文章总数</span><strong>2 篇</strong></div>
+                        <div class="stat-row"><span>标签</span><strong>4 个</strong></div>
+                        <div class="stat-row"><span>总字数</span><strong>172</strong></div>
+                    </div>
+                </div>
+                
+            </div>
+        </aside>
+
+        <!-- 中栏：文章内容 -->
+        <main class="content-main">
+            <article class="article-content">
+                <div class="prose"><p>今天是第一次一个人出来旅行喵<br>
+做你自己<br>
+然后去承受你为个性付出的代价和收获的礼物</p></div>
+            </article>
+
+            <nav class="article-nav">
+                
+                <span class="nav-end nav-prev">
+                    <div class="nav-label">← 上一篇</div>
+                    <div class="nav-title">已经是第一篇</div>
+                </span>
+                
+                
+                <a href="2026年09月30日.html" class="nav-next">
+                    <div class="nav-label">下一篇 →</div>
+                    <div class="nav-title">2026年09月30日</div>
+                </a>
+                
+            </nav>
+
+            
+            <!-- 评论区：GitHub Discussions（giscus），与正文同宽 -->
+            <section class="comment-section">
+                <h3>💬 评论 (<span id="commentCount">0</span>)</h3>
+                <div class="giscus"></div>
+                <p class="giscus-hint">评论存在 GitHub Discussions 里，需要用 GitHub 账号登录才能发言。</p>
+            </section>
+            
+        </main>
+
+        <!-- 右栏：弹幕 -->
+        
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="返回顶部" aria-label="返回顶部">↑</button>
+
+    <footer class="footer">
+        <div class="footer-stats" id="footerStats">
+            <span class="stat">🌐 <strong id="vGlobal">…</strong> 次全站浏览</span><span class="stat-divider">|</span>
+            <span class="stat">👁️ <strong id="vCounter">…</strong> 次阅读</span><span class="stat-divider">|</span>
+            <span class="stat">👤 <strong id="vUnique">…</strong> 位访客</span>
+        </div>
+        <p>Powered by <span>OpenBlogger</span> &copy; 2026</p>
+    </footer>
+
+    <script>
+    /* ═══════════ 粒子背景 ═══════════ */
+    !function(){const c=document.getElementById('particles'),x=c.getContext('2d');let w,h,p=[],N=45,D=120;function R(){w=c.width=innerWidth;h=c.height=innerHeight}R(),addEventListener('resize',R);function G(){return getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim().split(',').map(Number)}class T{constructor(){this.reset()}reset(){this.x=Math.random()*w;this.y=Math.random()*h;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*2+1}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>w)this.vx*=-1;if(this.y<0||this.y>h)this.vy*=-1}draw(){const[r,g,b]=G();x.beginPath();x.arc(this.x,this.y,this.r,0,Math.PI*2);x.fillStyle=`rgba(${r},${g},${b},0.6)`;x.fill()}}for(let i=0;i<N;i++)p.push(new T);(function A(){x.clearRect(0,0,w,h);const[r,g,b]=G();for(let i=0;i<N;i++){p[i].update();p[i].draw();for(let j=i+1;j<N;j++){const dx=p[i].x-p[j].x,dy=p[i].y-p[j].y,ds=Math.sqrt(dx*dx+dy*dy);if(ds<D){x.beginPath();x.moveTo(p[i].x,p[i].y);x.lineTo(p[j].x,p[j].y);x.strokeStyle=`rgba(${r},${g},${b},${.12*(1-ds/D)})`;x.lineWidth=.5;x.stroke()}}}requestAnimationFrame(A)})()}();
+
+    /* ═══════════ 深色模式 ═══════════ */
+    !function(){const t=document.getElementById('themeToggle'),b=document.documentElement,s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){b.classList.add('dark');t.textContent='☀️'}t.addEventListener('click',()=>{const d=b.classList.toggle('dark');t.textContent=d?'☀️':'🌙';localStorage.setItem('blog-theme',d?'dark':'light')})}();
+
+    /* ═══════════ 阅读进度条 ═══════════ */
+    !function(){const bar=document.getElementById('readingProgress');addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-innerHeight;bar.style.width=h>0?Math.min(100,Math.round(scrollY/h*100))+'%':'0%'})}();
+
+    /* ═══════════ 返回顶部 ═══════════ */
+    !function(){const b=document.getElementById('backToTop');addEventListener('scroll',()=>b.classList.toggle('visible',scrollY>400));b.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}))}();
+
+    /* ═══════════ 页面转场 ═══════════ */
+    !function(){document.body.classList.add('page-entering');addEventListener('load',function(){setTimeout(function(){document.body.classList.remove('page-entering')},700)});addEventListener('pageshow',function(e){if(e.persisted){document.body.classList.remove('page-exiting','page-entering');document.querySelectorAll('*').forEach(function(el){el.style.animation='none';el.offsetHeight;el.style.animation=''})}})}();
+    if(location.protocol!=='file:')!function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h[0]==='#'||h.indexOf('://')>0||h.indexOf('//')===0||a.target==='_blank')return;e.preventDefault();document.body.classList.add('page-exiting');setTimeout(function(){location.assign(h)},360)})}();
+    </script>
+
+    
+    <script src="../js/viewer/busuanzi.js"></script>
+    <script>
+    (function(){
+        Viewer.getGlobalCount().then(function(n){var e=document.getElementById('vGlobal');if(e)e.innerHTML=n.toLocaleString()});
+        getVisitCount().then(function(n){var e=document.getElementById('vCounter');if(e)e.innerHTML=n.toLocaleString()});
+        Viewer.getUniqueCount().then(function(r){var e=document.getElementById('vUnique');if(e)e.innerHTML=r.count.toLocaleString()});
+        
+        /* ═══════════ 评论系统：GitHub Discussions（giscus） ═══════════ */
+        (function(){
+            var isDark = document.documentElement.classList.contains('dark');
+            var s = document.createElement('script');
+            s.src = 'https://giscus.app/client.js';
+            s.async = true;
+            s.crossOrigin = 'anonymous';
+            s.setAttribute('data-repo',         'frantcy/frantcy.github.io');
+            s.setAttribute('data-repo-id',      'R_kgDOUyQ6Gw');
+            s.setAttribute('data-category',     'Announcements');
+            s.setAttribute('data-category-id',  'DIC_kwDOUyQ6G84DGpwa');
+            s.setAttribute('data-mapping',      'specific');
+            s.setAttribute('data-term',         'https://frantcy.github.io/posts/2026%E5%B9%B410%E6%9C%8801%E6%97%A5.html');
+            s.setAttribute('data-strict',       '0');
+            s.setAttribute('data-reactions-enabled', '1');
+            s.setAttribute('data-emit-metadata', '1');
+            s.setAttribute('data-input-position', 'bottom');
+            s.setAttribute('data-theme',        isDark ? 'dark' : 'light');
+            s.setAttribute('data-lang',         'zh-CN');
+            s.setAttribute('data-loading',      'lazy');
+            var box = document.querySelector('.giscus');
+            (box ? box.parentNode : document.body).appendChild(s);
+
+            /* 站点深浅色切换时同步 giscus 主题 */
+            function syncTheme(){
+                var f = document.querySelector('iframe.giscus-frame');
+                if (f && f.contentWindow) {
+                    f.contentWindow.postMessage({
+                        giscus: { setConfig: { theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light' } }
+                    }, 'https://giscus.app');
+                }
+            }
+            var tg = document.getElementById('themeToggle');
+            if (tg) tg.addEventListener('click', function(){ setTimeout(syncTheme, 80); });
+
+            /* giscus 回传讨论信息 → 更新评论数 */
+            addEventListener('message', function(e){
+                if (e.origin !== 'https://giscus.app') return;
+                var d = e.data && e.data.giscus;
+                if (!d) return;
+                var c = document.getElementById('commentCount');
+                if (c && d.discussion && typeof d.discussion.totalCommentCount === 'number') {
+                    c.textContent = d.discussion.totalCommentCount - (d.discussion.totalReplyCount || 0);
+                }
+                if (d.error) {
+                    console.warn('giscus:', d.error);
+                }
+            });
+        })();
+        
+    })();
+    </script>
+    
+</body>
+</html>
