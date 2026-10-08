@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="images/favicon.jpg">
+    <meta name="x-viewer-page-id" content="7">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function(){var s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();</script>
+    <title>资源 — Frantcy 的日常</title>
+    <style>
+        :root {
+            --bg: #fdfbf7; --card-bg: #ffffff; --text: #2c2416; --text-secondary: #6b5e4a;
+            --accent: #b1743e; --accent-hover: #8b5a2e; --border: #e5ddd0; --tag-bg: #f5efe3;
+            --shadow: 0 1px 3px rgba(44,36,22,0.06);
+            --shadow-hover: 0 8px 24px rgba(44,36,22,0.12); --radius: 10px;
+            --max-width: 800px; --nav-blur: blur(12px); --particle-color: 180,160,140;
+        }
+        html.dark {
+            --bg: #1a1a1f; --card-bg: #25252b; --text: #d4d0c8; --text-secondary: #9a9488;
+            --accent: #d4945a; --accent-hover: #e8a86e; --border: #36363d;
+            --tag-bg: #2e2e35; --shadow: 0 1px 3px rgba(0,0,0,0.2);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.35); --particle-color: 120,110,100;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.7;
+            min-height: 100vh; display: flex; flex-direction: column;
+            transition: background 0.4s, color 0.4s;
+        }
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; }
+        html.dark #particles { opacity: 0.25; }
+
+        .navbar {
+            background: color-mix(in srgb, var(--card-bg) 85%, transparent);
+            backdrop-filter: var(--nav-blur);
+            border-bottom: 1px solid var(--border); padding: 0 2rem;
+            position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+            transition: background 0.4s, border 0.4s;
+        }
+        .navbar-inner { max-width: var(--max-width); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+        .navbar .brand { font-size: 1.3rem; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.02em; transition: color 0.3s; }
+        .navbar .brand:hover { color: var(--accent); }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .theme-toggle {
+            background: none; border: 1.5px solid var(--border); color: var(--text-secondary);
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; margin-left: 0.25rem;
+        }
+        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+
+        .page-header {
+            text-align: center; padding: 3.5rem 2rem 2rem;
+            max-width: var(--max-width); margin: 0 auto; position: relative; z-index: 1;
+        }
+        .page-header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+        .page-header .subtitle { font-size: 1rem; color: var(--text-secondary); }
+
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 3rem; flex: 1; width: 100%; position: relative; z-index: 1; }
+        .section-title {
+            font-size: 1rem; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            margin: 2rem 0 1rem; padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border); transition: border 0.4s;
+        }
+        .section-title:first-child { margin-top: 0; }
+
+        /* ── 抽屉式折叠 ── */
+        .drawer { margin-bottom: 1.5rem; }
+        .drawer summary {
+            font-size: 1rem; font-weight: 700; color: var(--text);
+            padding: 0.75rem 1rem; cursor: pointer; list-style: none;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s; user-select: none;
+        }
+        .drawer summary::-webkit-details-marker { display: none; }
+        .drawer summary:hover { border-color: var(--accent); }
+        .drawer summary::after { content: '▸'; font-size: 1.1rem; color: var(--text-secondary); transition: transform 0.3s; }
+        .drawer[open] summary::after { transform: rotate(90deg); }
+        .drawer[open] summary { border-radius: var(--radius) var(--radius) 0 0; border-bottom-color: transparent; }
+        .drawer .drawer-body { padding: 0.5rem 0.25rem 0; }
+
+        .res-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 0.8rem;
+            box-shadow: var(--shadow); text-decoration: none; color: var(--text);
+            display: flex; gap: 1rem; align-items: center;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            position: relative; overflow: hidden;
+        }
+        .res-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: var(--accent); border-radius: 0 3px 3px 0;
+            transform: scaleY(0); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .res-card:hover::before { transform: scaleY(1); }
+        .res-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--accent); }
+        .res-card .res-icon { font-size: 1.8rem; flex-shrink: 0; width: 44px; text-align: center; }
+        .res-card .res-info { flex: 1; min-width: 0; }
+        .res-card .res-name { font-size: 1.1rem; font-weight: 700; transition: color 0.3s; }
+        .res-card:hover .res-name { color: var(--accent); }
+        .res-card .res-desc { font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.2rem; }
+        .res-card .res-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.35rem; }
+        .res-card .res-lang { display: inline-flex; align-items: center; gap: 0.3rem; }
+        .res-card .res-lang-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .res-badge {
+            display: inline-block; padding: 0.15rem 0.55rem; border-radius: 100px;
+            font-size: 0.72rem; font-weight: 600;
+        }
+        .res-badge.pages { background: var(--accent); color: #fff; }
+        .res-badge.repo { background: var(--tag-bg); color: var(--accent); }
+        .res-badge.tool { background: var(--tag-bg); color: var(--accent); }
+        .res-card .res-arrow { color: var(--text-secondary); font-size: 1.2rem; flex-shrink: 0; transition: color 0.3s; }
+        .res-card:hover .res-arrow { color: var(--accent); }
+
+        /* 骨架屏加载动画 */
+        @keyframes skeleton-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .skeleton-loading { pointer-events:none; animation:skeleton-pulse 1.5s ease-in-out infinite }
+        .skeleton-loading .res-icon { background:var(--border)!important; border-radius:8px }
+        .skeleton-loading .sk-line { height:0.75rem; background:var(--border); border-radius:4px }
+        .gh-error { text-align:center; padding:1.5rem; color:var(--text-secondary); font-size:0.9rem }
+        .gh-error a { color:var(--accent) }
+
+        /* 近期更新时间线 */
+        .tl-item {
+            display:flex; gap:0.7rem; align-items:flex-start;
+            padding:0.45rem 0; border-bottom:1px solid var(--border);
+            font-size:0.87rem; transition: all 0.3s;
+        }
+        .tl-item:last-child { border-bottom:none }
+        .tl-item:hover { color:var(--accent) }
+        .tl-item .tl-icon { font-size:1rem; width:24px;text-align:center;flex-shrink:0;margin-top:1px }
+        .tl-item .tl-body { flex:1; min-width:0 }
+        .tl-item .tl-repo { font-weight:600; color:var(--accent); text-decoration:none }
+        .tl-item .tl-repo:hover { text-decoration:underline }
+        .tl-item .tl-time { font-size:0.72rem; color:var(--text-secondary);white-space:nowrap;flex-shrink:0 }
+        .tl-item .tl-ref { font-size:0.72rem; color:var(--text-secondary); display:inline-block; margin-left:0.3rem }
+        .tl-msg { font-size:0.75rem; color:var(--text-secondary); margin-top:0.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:500px }
+        .tl-empty { text-align:center; padding:1rem; color:var(--text-secondary); font-size:0.85rem }
+        .tl-meta { font-size:0.72rem; color:var(--text-secondary); margin-top:0.5rem; text-align:right }
+
+        .back-to-top {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--card-bg); border: 2px solid var(--border);
+            color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: translateY(20px); pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: var(--shadow);
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+        .footer { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: auto; position: relative; z-index: 1; transition: border 0.4s; }
+        .footer span { color: var(--accent); }
+
+        @media (max-width: 768px) {
+            body { font-size: 0.95rem; }
+            .navbar { padding: 0 0.8rem; }
+            .navbar .brand { font-size: 1.1rem; }
+            .nav-links { gap: 0.6rem; }
+            .nav-links a { font-size: 0.85rem; }
+            .theme-toggle { width: 30px; height: 30px; font-size: 0.9rem; }
+            .page-header h1 { font-size: 1.5rem; }
+            .page-header { padding: 1.5rem 1rem 0.8rem; }
+            .container { padding: 0 0.75rem 1.5rem; }
+            .res-card { padding: 0.85rem 1rem; }
+            .res-card .res-name { font-size: 1rem; }
+            .res-card .res-desc { font-size: 0.82rem; }
+            .back-to-top { bottom: 1rem; right: 1rem; width: 36px; height: 36px; }
+            .footer { padding: 1.2rem 1rem; font-size: 0.78rem; }
+        }
+
+        /* ═══════════ 页面转场 ═══════════ */
+        body.page-exiting .navbar     { animation: exitUp   0.32s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .page-header{ animation: exitUp   0.30s 0.03s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .container  { animation: exitDown 0.30s 0.06s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .footer     { animation: exitDown 0.28s 0.08s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .back-to-top{ animation: exitDown 0.20s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting::after { content:''; position:fixed; inset:0; background:var(--bg); z-index:9999; animation: fadeIn 0.25s 0.2s both; }
+
+        @keyframes exitUp    { to { opacity:0; transform:translateY(-130%); } }
+        @keyframes exitDown  { to { opacity:0; transform:translateY(130%); } }
+        @keyframes exitLeft  { to { opacity:0; transform:translateX(-120%); } }
+        @keyframes exitRight { to { opacity:0; transform:translateX(120%); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        body.page-entering .navbar     { animation: enterDown  0.55s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .page-header{ animation: enterDown  0.48s 0.06s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .container  { animation: enterUp    0.48s 0.14s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .res-card:nth-child(odd)  { animation: enterLeft  0.45s 0.18s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .res-card:nth-child(even) { animation: enterRight 0.45s 0.20s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .footer     { animation: enterUp    0.45s 0.24s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .back-to-top{ animation: enterPop   0.35s 0.28s cubic-bezier(0.22,0.61,0.36,1) both; }
+
+        @keyframes enterDown {
+            0%   { opacity:0; transform:translateY(-100%); }
+            55%  { opacity:1; transform:translateY(12px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes enterUp {
+            0%   { opacity:0; transform:translateY(80px); }
+            55%  { opacity:1; transform:translateY(-8px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes enterLeft {
+            0%   { opacity:0; transform:translateX(-80px); }
+            55%  { opacity:1; transform:translateX(8px); }
+            100% { opacity:1; transform:translateX(0); }
+        }
+        @keyframes enterRight {
+            0%   { opacity:0; transform:translateX(80px); }
+            55%  { opacity:1; transform:translateX(-8px); }
+            100% { opacity:1; transform:translateX(0); }
+        }
+        @keyframes enterPop {
+            0%   { opacity:0; transform:scale(0.4); }
+            55%  { opacity:1; transform:scale(1.12); }
+            100% { opacity:1; transform:scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="brand">Frantcy 的日常</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="directory.html">目录</a></li>
+                <li><a href="tags.html">标签</a></li>
+                <li><a href="resources.html" class="active">资源</a></li>
+                <li><a href="friendlinks.html">友链</a></li>
+                <li><button class="theme-toggle" id="themeToggle" title="切换颜色模式" aria-label="切换颜色模式">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>📦 资源</h1>
+        <p class="subtitle">开源项目 · 在线工具 · 实验作品</p>
+    </div>
+
+    <div class="container">
+        <details class="drawer" open>
+            <summary>🚀 GitHub 开源项目 <span id="gh-repo-count" style="font-weight:400;font-size:0.8rem;color:var(--text-secondary)">加载中…</span></summary>
+            <div class="drawer-body" id="github-projects">
+                <div class="res-card skeleton-loading"><div class="res-icon"></div><div class="res-info"><div class="sk-line" style="width:50%;margin-bottom:0.5rem"></div><div class="sk-line" style="width:80%"></div></div></div>
+                <div class="res-card skeleton-loading"><div class="res-icon"></div><div class="res-info"><div class="sk-line" style="width:55%;margin-bottom:0.5rem"></div><div class="sk-line" style="width:75%"></div></div></div>
+                <div class="res-card skeleton-loading"><div class="res-icon"></div><div class="res-info"><div class="sk-line" style="width:45%;margin-bottom:0.5rem"></div><div class="sk-line" style="width:70%"></div></div></div>
+                <div class="res-card skeleton-loading"><div class="res-icon"></div><div class="res-info"><div class="sk-line" style="width:52%;margin-bottom:0.5rem"></div><div class="sk-line" style="width:78%"></div></div></div>
+            </div>
+        </details>
+
+        
+        <details class="drawer" open>
+            <summary>🕐 近期更新 <span style="font-weight:400;font-size:0.8rem;color:var(--text-secondary)">13 条事件 · 2 个仓库</span></summary>
+            <div class="drawer-body">
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="新增 new_post.py 一键写日记；控制台菜单重排；deploy 加 .nojekyll">新增 new_post.py 一键写日记；控制台菜单重排；deploy 加 .nojekyll</div>
+            </div>
+            <span class="tl-time">2026-09-29 10:12 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">🆕</span>
+            <div class="tl-body">
+                <span>🆕 创建了</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                
+            </div>
+            <span class="tl-time">2026-09-29 10:05 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">🆕</span>
+            <div class="tl-body">
+                <span>🆕 创建了</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                
+            </div>
+            <span class="tl-time">2026-09-29 10:05 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="初始化博客：OpenBlogger 骨架 + 空文章数据">初始化博客：OpenBlogger 骨架 + 空文章数据</div>
+            </div>
+            <span class="tl-time">2026-09-29 10:05 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="初始化博客：OpenBlogger 骨架 + 空文章数据">初始化博客：OpenBlogger 骨架 + 空文章数据</div>
+            </div>
+            <span class="tl-time">2026-09-29 10:03 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="初始化博客：OpenBlogger 骨架 + 空文章数据">初始化博客：OpenBlogger 骨架 + 空文章数据</div>
+            </div>
+            <span class="tl-time">2026-09-29 09:45 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="初始化博客：OpenBlogger 骨架 + 空文章数据">初始化博客：OpenBlogger 骨架 + 空文章数据</div>
+            </div>
+            <span class="tl-time">2026-09-29 09:42 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="setup_github：预置主机指纹 + SSH22/SSH443/HTTPS 三级推送兜底 + 用完清理含凭据远端地址">setup_github：预置主机指纹 + SSH22/SSH443/HTTPS 三级推送兜底 + 用完清理含凭据远端地址</div>
+            </div>
+            <span class="tl-time">2026-09-29 07:43 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="新增 setup_github.py：Token/SSH 一键建仓、推源码、部署 gh-pages">新增 setup_github.py：Token/SSH 一键建仓、推源码、部署 gh-pages</div>
+            </div>
+            <span class="tl-time">2026-09-29 07:34 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/frantcy.github.io" target="_blank" rel="noopener">frantcy.github.io</a>
+                
+                <div class="tl-msg" title="初始化博客：OpenBlogger 骨架 + 空文章数据">初始化博客：OpenBlogger 骨架 + 空文章数据</div>
+            </div>
+            <span class="tl-time">2026-09-29 07:16 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">🆕</span>
+            <div class="tl-body">
+                <span>🆕 创建了</span>
+                <a class="tl-repo" href="https://github.com/frantcy/AI-Journey" target="_blank" rel="noopener">AI-Journey</a>
+                
+                
+            </div>
+            <span class="tl-time">2026-09-19 08:51 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/AI-Journey" target="_blank" rel="noopener">AI-Journey</a>
+                
+                <div class="tl-msg" title="remove .gitignore">remove .gitignore</div>
+            </div>
+            <span class="tl-time">2026-09-19 04:11 UTC</span>
+        </div>
+        
+        <div class="tl-item">
+            <span class="tl-icon">📤</span>
+            <div class="tl-body">
+                <span>📤 推送了代码</span>
+                <a class="tl-repo" href="https://github.com/frantcy/AI-Journey" target="_blank" rel="noopener">AI-Journey</a>
+                
+                <div class="tl-msg" title="init: create AI Journey">init: create AI Journey</div>
+            </div>
+            <span class="tl-time">2026-09-19 02:03 UTC</span>
+        </div>
+        
+                <div class="tl-meta">📡 数据来源: GitHub Events API · 抓取于 2026-09-29 10:24:58</div>
+            </div>
+        </details>
+        
+
+        
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="返回顶部" aria-label="返回顶部">↑</button>
+
+    <footer class="footer"><p>Powered by <span>OpenBlogger</span> &copy; 2026</p></footer>
+
+    <script>
+    !function(){const c=document.getElementById('particles'),x=c.getContext('2d');let w,h,p=[],N=45,D=120;function R(){w=c.width=innerWidth;h=c.height=innerHeight}R(),addEventListener('resize',R);function G(){return getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim().split(',').map(Number)}class T{constructor(){this.reset()}reset(){this.x=Math.random()*w;this.y=Math.random()*h;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*2+1}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>w)this.vx*=-1;if(this.y<0||this.y>h)this.vy*=-1}draw(){const[r,g,b]=G();x.beginPath();x.arc(this.x,this.y,this.r,0,Math.PI*2);x.fillStyle=`rgba(${r},${g},${b},0.6)`;x.fill()}}for(let i=0;i<N;i++)p.push(new T);(function A(){x.clearRect(0,0,w,h);const[r,g,b]=G();for(let i=0;i<N;i++){p[i].update();p[i].draw();for(let j=i+1;j<N;j++){const dx=p[i].x-p[j].x,dy=p[i].y-p[j].y,ds=Math.sqrt(dx*dx+dy*dy);if(ds<D){x.beginPath();x.moveTo(p[i].x,p[i].y);x.lineTo(p[j].x,p[j].y);x.strokeStyle=`rgba(${r},${g},${b},${.15*(1-ds/D)})`;x.lineWidth=.6;x.stroke()}}}requestAnimationFrame(A)})()}();
+    !function(){const t=document.getElementById('themeToggle'),b=document.documentElement,s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){b.classList.add('dark');t.textContent='☀️'}t.addEventListener('click',()=>{const d=b.classList.toggle('dark');t.textContent=d?'☀️':'🌙';localStorage.setItem('blog-theme',d?'dark':'light')})}();
+    !function(){const b=document.getElementById('backToTop');addEventListener('scroll',()=>b.classList.toggle('visible',scrollY>400));b.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}))}();
+    !function(){document.body.classList.add('page-entering');addEventListener('load',function(){setTimeout(function(){document.body.classList.remove('page-entering')},700)});addEventListener('pageshow',function(e){if(e.persisted){document.body.classList.remove('page-exiting','page-entering');document.querySelectorAll('*').forEach(function(el){el.style.animation='none';el.offsetHeight;el.style.animation=''})}})}();
+    if(location.protocol!=='file:')!function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h[0]==='#'||h.indexOf('://')>0||h.indexOf('//')===0||a.target==='_blank')return;e.preventDefault();document.body.classList.add('page-exiting');setTimeout(function(){location.assign(h)},360)})}();
+
+    // ═══════════ GitHub 开源项目：实时从 API 加载 ═══════════
+    !function(){
+        var LANG_COLORS={"Python":"#3572A5","JavaScript":"#f1e05a","TypeScript":"#3178c6","HTML":"#e34c26","CSS":"#563d7c","Java":"#b07219","C++":"#f34b7d","C":"#555555","Go":"#00ADD8","Rust":"#dea584","Shell":"#89e051","Vue":"#41b883","Kotlin":"#A97BFF","Swift":"#F05138","Dart":"#00B4AB","Ruby":"#701516"};
+        function icon(l){if(!l)return'📂';if(l.indexOf('Python')>-1)return'🐍';if(l.indexOf('JavaScript')>-1||l.indexOf('TypeScript')>-1)return'📜';if(l.indexOf('HTML')>-1)return'🌐';if(l.indexOf('Vue')>-1)return'💚';if(l.indexOf('Go')>-1)return'🔵';if(l.indexOf('Rust')>-1)return'🦀';if(l.indexOf('Java')>-1)return'☕';return'📂'}
+        var CACHE_KEY='gh_repos_v2',CACHE_TTL=60*60*1000;
+        var container=document.getElementById('github-projects');
+        var countEl=document.getElementById('gh-repo-count');
+        var USER='YHSome';
+
+        function buildCard(r){
+            var lang=r.language||'';
+            var hasPages=!!r.has_pages;
+            var link=hasPages?'https://yhsome.github.io/'+r.name+'/':r.html_url;
+            var stars=r.stargazers_count||0;
+            var forks=r.forks_count||0;
+            var desc=r.description||'';
+            var h='<a href="'+link+'" class="res-card" target="_blank" rel="noopener">';
+            h+='<div class="res-icon">'+icon(lang)+'</div>';
+            h+='<div class="res-info">';
+            h+='<span class="res-name">'+r.name+'</span>';
+            if(desc) h+='<div class="res-desc">'+desc+'</div>';
+            h+='<div class="res-meta">';
+            if(lang) h+='<span class="res-lang"><span class="res-lang-dot" style="background:'+(LANG_COLORS[lang]||'#8b8b8b')+'"></span>'+lang+'</span>';
+            h+='<span>⭐ '+stars+'</span>';
+            h+='<span>🍴 '+forks+'</span>';
+            h+='<span class="res-badge '+(hasPages?'pages':'repo')+'">'+(hasPages?'GitHub Pages':'仓库')+'</span>';
+            h+='</div></div><span class="res-arrow">→</span></a>';
+            return h
+        }
+
+        async function load(){
+            var cached=localStorage.getItem(CACHE_KEY);
+            if(cached){try{var d=JSON.parse(cached);if(Date.now()-d.ts<CACHE_TTL){render(d.repos);return}}catch(e){}}
+            try{
+                var headers={};
+                var token='';
+                if(token) headers['Authorization']='Bearer '+token;
+                var resp=await fetch('https://api.github.com/users/'+USER+'/repos?sort=updated&per_page=50',{headers:headers});
+                if(!resp.ok) throw new Error('API '+resp.status);
+                var repos=await resp.json();
+                var own=repos.filter(function(r){return!r.fork});
+                localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),repos:own}));
+                render(own)
+            }catch(e){
+                if(cached){try{var cd=JSON.parse(cached);render(cd.repos)}catch(e2){}}
+                container.innerHTML='<div class="gh-error">⚠️ GitHub 数据加载失败，请稍后刷新重试<br><small>'+e.message+'</small></div>';
+                countEl.textContent='加载失败'
+            }
+        }
+
+        function render(repos){
+            if(!repos.length){container.innerHTML='<div class="gh-error">暂无公开仓库</div>';countEl.textContent='0 个仓库';return}
+            countEl.textContent=repos.length+' 个仓库';
+            var html='';
+            for(var i=0;i<repos.length;i++) html+=buildCard(repos[i]);
+            container.innerHTML=html
+        }
+
+        load()
+    }();
+    </script>
+</body>
+</html>

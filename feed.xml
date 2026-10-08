@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Frantcy 的日常</title>
+    <link>https://frantcy.github.io</link>
+    <description>记录每一天的思考与生活。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 08 Oct 2026 22:18:10 +0800</lastBuildDate>
+    <atom:link href="https://frantcy.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>2026年10月08日</title>
+      <link>https://frantcy.github.io/posts/2026年10月08日.html</link>
+      <description>今天开始打基础吧，学习了函数的概念，明白了函数中参数的调用是有顺序的，main函数为主函数，里面调用函数的时候会逐一调用，注意void不会返回值，不能return后加数字，int函数调用结束后{return的值就是返回值} int函数最后返回值看return而不是定义的变量 void可以调用后直接修…</description>
+      <pubDate>Thu, 08 Oct 2026 00:00:00 +0800</pubDate>
+      <guid isPermaLink="true">https://frantcy.github.io/posts/2026年10月08日.html</guid>
+    </item>
+    <item>
+      <title>2026年10月01日</title>
+      <link>https://frantcy.github.io/posts/2026年10月01日.html</link>
+      <description>今天是第一次一个人出来旅行喵 做你自己 然后去承受你为个性付出的代价和收获的礼物</description>
+      <pubDate>Thu, 01 Oct 2026 00:00:00 +0800</pubDate>
+      <guid isPermaLink="true">https://frantcy.github.io/posts/2026年10月01日.html</guid>
+    </item>
+    <item>
+      <title>2026年09月30日</title>
+      <link>https://frantcy.github.io/posts/2026年09月30日.html</link>
+      <description>配置了环境吧（不得不说Deepseek是真好用），之前冲刺了一些为了RM而作的准备，了解了什么是指针，指针直接的易错点，*的有无会干扰所取的是地址还是内容，不过字符串之类的基本概念忘得差不多了，c语言的学习是一个长期的流程，别着急慢慢来，根据清单上的慢慢来，一定可以的！</description>
+      <pubDate>Wed, 30 Sep 2026 00:00:00 +0800</pubDate>
+      <guid isPermaLink="true">https://frantcy.github.io/posts/2026年09月30日.html</guid>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="images/favicon.jpg">
+    <meta name="x-viewer-page-id" content="5">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>(function(){var s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();</script>
+    <title>文章目录 — Frantcy 的日常</title>
+    <style>
+        /* ═══════════ 浅色模式 ═══════════ */
+        :root {
+            --bg: #fdfbf7;
+            --card-bg: #ffffff;
+            --text: #2c2416;
+            --text-secondary: #6b5e4a;
+            --accent: #b1743e;
+            --accent-hover: #8b5a2e;
+            --border: #e5ddd0;
+            --tag-bg: #f5efe3;
+            --code-bg: #f4f0e8;
+            --shadow: 0 1px 3px rgba(44,36,22,0.06);
+            --shadow-hover: 0 8px 24px rgba(44,36,22,0.12);
+            --radius: 10px;
+            --max-width: 720px;
+            --nav-blur: blur(12px);
+            --particle-color: 180,160,140;
+        }
+        html.dark {
+            --bg: #1a1a1f;
+            --card-bg: #25252b;
+            --text: #d4d0c8;
+            --text-secondary: #9a9488;
+            --accent: #d4945a;
+            --accent-hover: #e8a86e;
+            --border: #36363d;
+            --tag-bg: #2e2e35;
+            --code-bg: #2e2e35;
+            --shadow: 0 1px 3px rgba(0,0,0,0.2);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.35);
+            --particle-color: 120,110,100;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.7;
+            min-height: 100vh; display: flex; flex-direction: column;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5; }
+        html.dark #particles { opacity: 0.25; }
+
+        /* ── 导航栏 ── */
+        .navbar {
+            background: var(--card-bg); border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem; position: sticky; top: 0; z-index: 100;
+            box-shadow: var(--shadow); transition: background 0.4s, border 0.4s;
+            backdrop-filter: var(--nav-blur);
+            background: color-mix(in srgb, var(--card-bg) 85%, transparent);
+        }
+        .navbar-inner {
+            max-width: var(--max-width); margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 56px;
+        }
+        .navbar .brand { font-size: 1.25rem; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.02em; transition: color 0.3s; }
+        .navbar .brand:hover { color: var(--accent); }
+        .nav-links { display: flex; gap: 1.2rem; list-style: none; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .theme-toggle {
+            background: none; border: 1.5px solid var(--border); color: var(--text-secondary);
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; margin-left: 0.25rem;
+        }
+        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+
+        /* ── 页面头部 ── */
+        .page-header {
+            text-align: center; padding: 2.5rem 1.5rem 1rem;
+            max-width: var(--max-width); margin: 0 auto; position: relative; z-index: 1;
+        }
+        .page-header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+
+        /* ── 写文章入口（＋ 按钮） ── */
+        .write-btn {
+            display: inline-flex; align-items: center; gap: .35rem;
+            margin-left: .8rem; padding: .3rem .85rem .3rem .6rem;
+            font-size: .88rem; font-weight: 500; text-decoration: none;
+            color: var(--accent); background: var(--tag-bg);
+            border: 1.5px solid var(--border); border-radius: 100px;
+            vertical-align: middle; white-space: nowrap;
+            transition: color .3s, background .3s, border-color .3s, box-shadow .3s, transform .3s;
+        }
+        .write-btn:hover {
+            color: #fff; background: var(--accent); border-color: var(--accent);
+            box-shadow: var(--shadow-hover); transform: translateY(-2px);
+        }
+        .write-btn .plus { font-size: 1.15rem; line-height: 1; font-weight: 700; }
+
+        .fab-write {
+            position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 90;
+            width: 54px; height: 54px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.65rem; font-weight: 300; color: #fff; text-decoration: none;
+            background: var(--accent);
+            box-shadow: 0 6px 20px rgba(177, 116, 62, .45);
+            transition: transform .25s, background .3s;
+        }
+        .fab-write:hover { background: var(--accent-hover); transform: translateY(-3px) scale(1.05); }
+        .fab-write:active { transform: scale(.94); }
+        @media (max-width: 768px) {
+            .fab-write { right: .9rem; bottom: calc(.9rem + env(safe-area-inset-bottom)); width: 50px; height: 50px; font-size: 1.5rem; }
+            .write-btn { margin-left: .4rem; padding: .22rem .7rem .22rem .5rem; font-size: .8rem; }
+        }
+
+        /* ── 搜索 ── */
+        .search-bar { max-width: var(--max-width); margin: 0 auto 1.5rem; padding: 0 1.5rem; position: relative; z-index: 1; }
+        .search-bar input {
+            width: 100%; padding: 0.8rem 1.3rem; font-size: 1rem;
+            border: 2px solid var(--border); border-radius: 100px;
+            background: var(--card-bg); color: var(--text); outline: none; transition: all 0.3s;
+        }
+        .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(177,116,62,0.08); }
+        .search-bar input::placeholder { color: #b8a88c; }
+
+        /* ── 标签过滤 ── */
+        .filter-row {
+            max-width: var(--max-width); margin: 0 auto 1rem;
+            padding: 0 1.5rem; display: flex; gap: 0.5rem;
+            flex-wrap: wrap; align-items: flex-start; position: relative; z-index: 1;
+        }
+        .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; flex: 1; min-width: 0; }
+        .filter-bar .filter-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+        .filter-chip {
+            display: inline-block; padding: 0.3rem 0.85rem; border-radius: 100px; font-size: 0.85rem;
+            cursor: pointer; border: 1px solid var(--border); background: var(--card-bg);
+            color: var(--text-secondary); transition: all 0.3s; text-decoration: none;
+        }
+        .filter-chip:hover, .filter-chip.active { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+        .filter-chip .count { font-size: 0.75rem; opacity: 0.7; margin-left: 0.15rem; }
+        .filter-info { max-width: var(--max-width); margin: 0 auto 0.5rem; padding: 0 1.5rem; font-size: 0.9rem; color: var(--text-secondary); position: relative; z-index: 1; }
+        .filter-info a { color: var(--accent); text-decoration: none; }
+        .date-badge {
+            display: none; align-items: center; gap: 0.4rem;
+            max-width: var(--max-width); margin: 0 auto 0.5rem; padding: 0 1.5rem;
+            font-size: 0.85rem; color: var(--accent); position: relative; z-index: 1;
+        }
+        .date-badge.visible { display: flex; }
+        .date-badge .badge-text {
+            background: var(--tag-bg); padding: 0.25rem 0.75rem;
+            border-radius: 100px; font-weight: 600;
+        }
+        .date-badge .badge-clear {
+            cursor: pointer; color: var(--text-secondary);
+            font-size: 1rem; transition: color 0.2s;
+        }
+        .date-badge .badge-clear:hover { color: #c44; }
+
+        /* ── 文章列表 ── */
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem 2rem; flex: 1; width: 100%; position: relative; z-index: 1; }
+        .post-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.5rem 1.75rem; margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: block; text-decoration: none; color: var(--text);
+            position: relative; overflow: hidden;
+        }
+        .post-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: var(--accent); border-radius: 0 3px 3px 0;
+            transform: scaleY(0); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .post-card:hover::before { transform: scaleY(1); }
+        .post-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--accent); }
+        .post-card.hidden { display: none; }
+        .month-divider {
+            font-size: 1.05rem; font-weight: 700; color: var(--accent);
+            padding: 0.6rem 0 0.4rem; margin: 0.5rem 0 0.8rem;
+            border-bottom: 2px solid var(--border);
+            transition: border 0.4s;
+        }
+        .month-divider.hidden { display: none; }
+        .post-card .post-meta { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+        .post-card .post-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text); transition: color 0.3s; }
+        .post-card:hover .post-title { color: var(--accent); }
+        .post-card .post-excerpt { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+        .post-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+        .post-tags .tag {
+            display: inline-block; background: var(--tag-bg); color: var(--accent);
+            font-size: 0.78rem; padding: 0.18rem 0.65rem; border-radius: 100px;
+            text-decoration: none; transition: all 0.3s;
+        }
+        .post-tags .tag:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+
+        /* ── 返回顶部 ── */
+        .back-to-top {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--card-bg); border: 2px solid var(--border);
+            color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: translateY(20px); pointer-events: none;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: var(--shadow);
+        }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .back-to-top:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+        /* ── 页脚 ── */
+        .footer { text-align: center; padding: 2rem 1.5rem; color: var(--text-secondary); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: auto; position: relative; z-index: 1; transition: border 0.4s; }
+        .footer span { color: var(--accent); }
+        .footer-stats {
+            display: flex; justify-content: center; align-items: center; gap: 0.6rem;
+            flex-wrap: wrap; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text-secondary);
+        }
+        .footer-stats .stat { display: inline-flex; align-items: center; gap: 0.2rem; }
+        .footer-stats .stat strong { color: var(--accent); font-weight: 700; }
+        .footer-stats .stat-divider { color: var(--border); }
+        .empty-state { text-align: center; color: var(--text-secondary); padding: 4rem 0; font-size: 1.05rem; }
+
+        @media (max-width: 768px) {
+            body { font-size: 0.95rem; }
+            .navbar { padding: 0 0.8rem; }
+            .navbar .brand { font-size: 1.1rem; }
+            .nav-links { gap: 0.6rem; }
+            .nav-links a { font-size: 0.85rem; }
+            .theme-toggle { width: 30px; height: 30px; font-size: 0.9rem; }
+            .page-header h1 { font-size: 1.5rem; }
+            .page-header { padding: 1.5rem 1rem 0.8rem; }
+            .search-bar { padding: 0 0.75rem; }
+            .search-bar input { padding: 0.6rem 1rem; font-size: 0.9rem; }
+            .filter-row { padding: 0 0.75rem; flex-direction: column; }
+            .filter-chip { padding: 0.2rem 0.6rem; font-size: 0.78rem; }
+            .calendar-wrap { margin-left: 0; justify-content: center; }
+            .container { padding: 0 0.75rem 1.5rem; }
+            .post-card { padding: 1rem 1.2rem; }
+            .post-card .post-title { font-size: 1.1rem; }
+            .post-card .post-excerpt { font-size: 0.88rem; }
+            .post-card .post-meta { font-size: 0.78rem; gap: 0.4rem; }
+            .month-divider { font-size: 0.9rem; margin: 0.3rem 0 0.5rem; }
+            .back-to-top { bottom: 1rem; right: 1rem; width: 36px; height: 36px; }
+            .footer { padding: 1.2rem 1rem; font-size: 0.78rem; }
+            .footer-stats { font-size: 0.78rem; gap: 0.4rem; }
+        }
+
+        /* ── 日历 ── */
+        .calendar-wrap {
+            margin-left: auto; flex-shrink: 0;
+        }
+        .calendar-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 0.75rem 1rem;
+            box-shadow: var(--shadow); font-size: 0.85rem;
+            user-select: none; transition: background 0.4s, border 0.4s;
+        }
+        .calendar-card .cal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.5rem; font-weight: 700; color: var(--text);
+        }
+        .calendar-card .cal-header button {
+            background: none; border: none; color: var(--accent);
+            cursor: pointer; font-size: 1rem; padding: 0 0.3rem;
+        }
+        .calendar-card .cal-header button:hover { color: var(--accent-hover); }
+        .calendar-card .cal-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 2px; text-align: center;
+        }
+        .calendar-card .cal-day-hdr {
+            font-size: 0.7rem; color: var(--text-secondary); padding: 2px 0;
+        }
+        .calendar-card .cal-day {
+            padding: 3px 0; border-radius: 4px; cursor: default;
+            color: var(--text-secondary);
+        }
+        .calendar-card .cal-day.has-post {
+            background: var(--tag-bg); color: var(--accent);
+            font-weight: 700; cursor: pointer;
+        }
+        .calendar-card .cal-day.has-post:hover { background: var(--accent); color: #fff; }
+        .calendar-card .cal-day.active-date { background: var(--accent); color: #fff; }
+        .calendar-card .cal-day.today { outline: 1.5px solid var(--accent); outline-offset: -1px; }
+        .calendar-card .cal-day.other-month { opacity: 0.3; }
+        @media (max-width: 768px) { .calendar-wrap { justify-content: center; } }
+
+        /* ═══════════ 页面转场 ═══════════ */
+        body.page-exiting .navbar     { animation: exitUp   0.32s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .page-header{ animation: exitUp   0.30s 0.03s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .search-bar { animation: exitLeft 0.28s 0.05s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .filter-bar { animation: exitLeft 0.26s 0.06s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .container  { animation: exitDown 0.30s 0.08s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .footer     { animation: exitDown 0.28s 0.10s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting .back-to-top{ animation: exitDown 0.20s cubic-bezier(0.55,0,1,0.45) forwards; }
+        body.page-exiting::after { content:''; position:fixed; inset:0; background:var(--bg); z-index:9999; animation: fadeIn 0.25s 0.2s both; }
+
+        @keyframes exitUp    { to { opacity:0; transform:translateY(-130%); } }
+        @keyframes exitDown  { to { opacity:0; transform:translateY(130%); } }
+        @keyframes exitLeft  { to { opacity:0; transform:translateX(-120%); } }
+        @keyframes exitRight { to { opacity:0; transform:translateX(120%); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        body.page-entering .navbar     { animation: enterDown  0.55s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .page-header{ animation: enterDown  0.48s 0.06s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .search-bar { animation: enterLeft  0.42s 0.10s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .filter-bar { animation: enterUp    0.40s 0.13s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .container  { animation: enterUp    0.48s 0.16s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .post-card:nth-child(odd)  { animation: enterLeft  0.50s 0.20s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .post-card:nth-child(even) { animation: enterRight 0.50s 0.22s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .footer     { animation: enterUp    0.45s 0.28s cubic-bezier(0.22,0.61,0.36,1) both; }
+        body.page-entering .back-to-top{ animation: enterPop   0.35s 0.32s cubic-bezier(0.22,0.61,0.36,1) both; }
+
+        @keyframes enterDown {
+            0%   { opacity:0; transform:translateY(-100%); }
+            55%  { opacity:1; transform:translateY(12px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes enterUp {
+            0%   { opacity:0; transform:translateY(80px); }
+            55%  { opacity:1; transform:translateY(-8px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes enterLeft {
+            0%   { opacity:0; transform:translateX(-80px); }
+            55%  { opacity:1; transform:translateX(8px); }
+            100% { opacity:1; transform:translateX(0); }
+        }
+        @keyframes enterRight {
+            0%   { opacity:0; transform:translateX(80px); }
+            55%  { opacity:1; transform:translateX(-8px); }
+            100% { opacity:1; transform:translateX(0); }
+        }
+        @keyframes enterPop {
+            0%   { opacity:0; transform:scale(0.4); }
+            55%  { opacity:1; transform:scale(1.12); }
+            100% { opacity:1; transform:scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+
+    <a href="compose.html" class="fab-write" title="写一篇新文章" aria-label="写一篇新文章">＋</a>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="brand">Frantcy 的日常</a>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="directory.html" class="active">目录</a></li>
+                <li><a href="tags.html">标签</a></li>
+                <li><a href="resources.html">资源</a></li>
+                <li><a href="friendlinks.html">友链</a></li>
+                <li><button class="theme-toggle" id="themeToggle" title="切换深色/浅色模式" aria-label="切换颜色模式">🌙</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header"><h1>📚 文章目录<a href="compose.html" class="write-btn" title="写一篇新文章"><span class="plus">＋</span>写今天</a></h1></div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="搜索文章标题、内容或标签…" autocomplete="off">
+    </div>
+
+    <div class="filter-row">
+        <div class="filter-bar" id="filterBar">
+            <span class="filter-label">筛选：</span>
+            <span class="filter-chip active" data-tag="">全部</span>
+            
+            <span class="filter-chip" data-tag="日记">日记<span class="count">(2)</span></span>
+            
+            <span class="filter-chip" data-tag="只登一步">只登一步<span class="count">(1)</span></span>
+            
+            <span class="filter-chip" data-tag="第一天：山高万仞">第一天：山高万仞<span class="count">(1)</span></span>
+            
+            <span class="filter-chip" data-tag="第二天！">第二天！<span class="count">(1)</span></span>
+            
+            <span class="filter-chip" data-tag="随笔">随笔<span class="count">(1)</span></span>
+            
+        </div>
+        <div class="calendar-wrap">
+            <div class="calendar-card" id="calendarCard"></div>
+        </div>
+    </div>
+
+    
+
+    <div class="date-badge" id="dateBadge">
+        <span class="badge-text" id="dateBadgeText"></span>
+        <span class="badge-clear" id="dateBadgeClear" title="清除日期筛选">✕</span>
+    </div>
+
+    <div class="container" id="postList">
+        
+            
+            
+            <div class="month-divider">2026年10月</div>
+            
+            <a href="posts/2026年10月08日.html" class="post-card" data-date="2026-10-08" data-tags="第二天！,日记" data-search-text="2026年10月08日 今天开始打基础吧，学习了函数的概念，明白了函数中参数的调用是有顺序的，main函数为主函数，里面调用函数的时候会逐一调用，注意void不会返回值，不能return后加数字，int函数调用结束后{return的值就是返回值} int函数最后返回值看return而不是定义的变量 void可以调用后直接修… 第二天！ 日记">
+                <div class="post-meta">
+                    <span>📅 2026年10月08日</span>
+                    <span>·</span><span>🏷️ 第二天！, 🏷️ 日记</span>
+                </div>
+                <div class="post-title">2026年10月08日</div>
+                <div class="post-excerpt">今天开始打基础吧，学习了函数的概念，明白了函数中参数的调用是有顺序的，main函数为主函数，里面调用函数的时候会逐一调用，注意void不会返回值，不能return后加数字，int函数调用结束后{return的值就是返回值} int函数最后返回值看return而不是定义的变量 void可以调用后直接修…</div>
+                <div class="post-tags">
+                    <span class="tag">第二天！</span><span class="tag">日记</span>
+                </div>
+            </a>
+            
+            
+            <a href="posts/2026年10月01日.html" class="post-card" data-date="2026-10-01" data-tags="随笔" data-search-text="2026年10月01日 今天是第一次一个人出来旅行喵 做你自己 然后去承受你为个性付出的代价和收获的礼物 随笔">
+                <div class="post-meta">
+                    <span>📅 2026年10月01日</span>
+                    <span>·</span><span>🏷️ 随笔</span>
+                </div>
+                <div class="post-title">2026年10月01日</div>
+                <div class="post-excerpt">今天是第一次一个人出来旅行喵 做你自己 然后去承受你为个性付出的代价和收获的礼物</div>
+                <div class="post-tags">
+                    <span class="tag">随笔</span>
+                </div>
+            </a>
+            
+            
+            <div class="month-divider">2026年9月</div>
+            
+            <a href="posts/2026年09月30日.html" class="post-card" data-date="2026-09-30" data-tags="第一天：山高万仞,只登一步,日记" data-search-text="2026年09月30日 配置了环境吧（不得不说Deepseek是真好用），之前冲刺了一些为了RM而作的准备，了解了什么是指针，指针直接的易错点，*的有无会干扰所取的是地址还是内容，不过字符串之类的基本概念忘得差不多了，c语言的学习是一个长期的流程，别着急慢慢来，根据清单上的慢慢来，一定可以的！ 第一天：山高万仞 只登一步 日记">
+                <div class="post-meta">
+                    <span>📅 2026年09月30日</span>
+                    <span>·</span><span>🏷️ 第一天：山高万仞, 🏷️ 只登一步, 🏷️ 日记</span>
+                </div>
+                <div class="post-title">2026年09月30日</div>
+                <div class="post-excerpt">配置了环境吧（不得不说Deepseek是真好用），之前冲刺了一些为了RM而作的准备，了解了什么是指针，指针直接的易错点，*的有无会干扰所取的是地址还是内容，不过字符串之类的基本概念忘得差不多了，c语言的学习是一个长期的流程，别着急慢慢来，根据清单上的慢慢来，一定可以的！</div>
+                <div class="post-tags">
+                    <span class="tag">第一天：山高万仞</span><span class="tag">只登一步</span><span class="tag">日记</span>
+                </div>
+            </a>
+            
+        
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="返回顶部" aria-label="返回顶部">↑</button>
+
+    <footer class="footer">
+        <div class="footer-stats" id="footerStats">
+            <span class="stat">🌐 <strong id="vGlobal">…</strong> 次全站浏览</span><span class="stat-divider">|</span>
+            <span class="stat">👁️ <strong id="vCounter">…</strong> 次阅读</span><span class="stat-divider">|</span>
+            <span class="stat">👤 <strong id="vUnique">…</strong> 位访客</span>
+        </div>
+        <p>Powered by <span>OpenBlogger</span> &copy; 2026</p>
+    </footer>
+
+    <script>
+    /* ═══════════ 粒子背景 ═══════════ */
+    !function(){const c=document.getElementById('particles'),x=c.getContext('2d');let w,h,p=[],N=55,D=120;function R(){w=c.width=innerWidth;h=c.height=innerHeight}R(),addEventListener('resize',R);function G(){return getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim().split(',').map(Number)}class T{constructor(){this.reset()}reset(){this.x=Math.random()*w;this.y=Math.random()*h;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*2+1}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>w)this.vx*=-1;if(this.y<0||this.y>h)this.vy*=-1}draw(){const[r,g,b]=G();x.beginPath();x.arc(this.x,this.y,this.r,0,Math.PI*2);x.fillStyle=`rgba(${r},${g},${b},0.6)`;x.fill()}}for(let i=0;i<N;i++)p.push(new T);(function A(){x.clearRect(0,0,w,h);const[r,g,b]=G();for(let i=0;i<N;i++){p[i].update();p[i].draw();for(let j=i+1;j<N;j++){const dx=p[i].x-p[j].x,dy=p[i].y-p[j].y,ds=Math.sqrt(dx*dx+dy*dy);if(ds<D){x.beginPath();x.moveTo(p[i].x,p[i].y);x.lineTo(p[j].x,p[j].y);x.strokeStyle=`rgba(${r},${g},${b},${.15*(1-ds/D)})`;x.lineWidth=.6;x.stroke()}}}requestAnimationFrame(A)})()}();
+
+    /* ═══════════ 深色模式 ═══════════ */
+    !function(){const t=document.getElementById('themeToggle'),b=document.documentElement,s=localStorage.getItem('blog-theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){b.classList.add('dark');t.textContent='☀️'}t.addEventListener('click',()=>{const d=b.classList.toggle('dark');t.textContent=d?'☀️':'🌙';localStorage.setItem('blog-theme',d?'dark':'light')})}();
+
+    /* ═══════════ 日历 ─────────────────────────────── */
+    !function(){
+        var dates=["2026-09-30", "2026-10-01", "2026-10-08"];  // ["2023-04-09","2023-04-12",...]
+        var hasPost={}; dates.forEach(function(d){hasPost[d]=1});
+        var card=document.getElementById('calendarCard');
+        if(!card||!dates.length)return;
+
+        var now=new Date();
+        var curY=now.getFullYear(),curM=now.getMonth();  // 0-based
+        var today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+        var dayNames=['日','一','二','三','四','五','六'];
+
+        function showDateBadge(d){
+            var badge=document.getElementById('dateBadge');
+            var text=document.getElementById('dateBadgeText');
+            text.textContent=d; badge.classList.add('visible');
+        }
+        document.getElementById('dateBadgeClear').addEventListener('click',function(){
+            window.dateFilter=''; document.getElementById('dateBadge').classList.remove('visible');
+            document.querySelectorAll('#calendarCard .cal-day.active-date').forEach(function(e){e.classList.remove('active-date')});
+            filterPosts();
+        });
+
+        function build(y,m){
+            var hdr='<button id="calPrev">◀</button>'+y+'年'+(m+1)+'月<button id="calNext">▶</button>';
+            var grid='<div class="cal-grid">';
+            dayNames.forEach(function(d){grid+='<div class="cal-day-hdr">'+d+'</div>'});
+            var first=new Date(y,m,1).getDay();
+            var daysIn=new Date(y,m+1,0).getDate();
+            var prevDays=new Date(y,m,0).getDate();
+            // 上月尾
+            for(var i=first-1;i>=0;i--){
+                grid+='<div class="cal-day other-month">'+(prevDays-i)+'</div>';
+            }
+            // 本月
+            for(var d=1;d<=daysIn;d++){
+                var key=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+                var cls='cal-day';
+                if(hasPost[key])cls+=' has-post';
+                if(key===today)cls+=' today';
+                grid+='<div class="'+cls+'" data-date="'+key+'">'+d+'</div>';
+            }
+            // 下月头
+            var remaining=(7-(first+daysIn)%7)%7;
+            for(var d=1;d<=remaining;d++){
+                grid+='<div class="cal-day other-month">'+d+'</div>';
+            }
+            grid+='</div>';
+            card.innerHTML='<div class="cal-header">'+hdr+'</div>'+grid;
+            document.getElementById('calPrev').addEventListener('click',function(){
+                curM--; if(curM<0){curM=11;curY--;} build(curY,curM);
+            });
+            document.getElementById('calNext').addEventListener('click',function(){
+                curM++; if(curM>11){curM=0;curY++;} build(curY,curM);
+            });
+            // 点击日期 → 滚动定位
+            card.querySelectorAll('.cal-day.has-post').forEach(function(el){
+                el.addEventListener('click',function(){
+                    var d=el.dataset.date;
+                    // 设置日期过滤
+                    window.dateFilter=d;
+                    // 高亮 + 显示日期标签
+                    document.querySelectorAll('#calendarCard .cal-day.active-date').forEach(function(e){e.classList.remove('active-date')});
+                    el.classList.add('active-date');
+                    showDateBadge(d);
+                    // 重置标签
+                    document.querySelectorAll('#filterBar .filter-chip').forEach(function(c){c.classList.toggle('active',!c.dataset.tag)});
+                    // 清除搜索框
+                    document.getElementById('searchInput').value='';
+                    filterPosts();
+                    // 滚动到对应文章
+                    setTimeout(function(){
+                        var firstVis=document.querySelector('#postList .post-card:not(.hidden)');
+                        if(firstVis)firstVis.scrollIntoView({behavior:'smooth',block:'start'});
+                    },100);
+                });
+            });
+        }
+        build(curY,curM);
+    }();
+
+    /* ═══════════ 搜索 + 标签过滤 ═══════════ */
+    var filterPosts=function(){};  // 全局占位
+    !function(){const si=document.getElementById('searchInput'),pl=document.getElementById('postList'),fb=document.getElementById('filterBar'),cards=pl.querySelectorAll('.post-card'),dividers=pl.querySelectorAll('.month-divider');let active='';window.dateFilter='';const p=new URLSearchParams(location.search),ut=p.get('tag'),sq=p.get('search');if(ut){active=ut;fb.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active',c.dataset.tag===ut))}if(sq){si.value=decodeURIComponent(sq)}function F(){const q=si.value.toLowerCase().trim(),df=window.dateFilter||'';cards.forEach(c=>{const ts=c.dataset.tags||'',st=c.dataset.searchText||'',mq=!q||st.toLowerCase().includes(q),mt=!active||ts.split(',').includes(active),md=!df||c.dataset.date===df;c.classList.toggle('hidden',!(mq&&mt&&md))});var els=pl.children,vis=false;for(var i=els.length-1;i>=0;i--){var el=els[i];if(el.nodeType!==1)continue;if(el.classList.contains('month-divider')){el.classList.toggle('hidden',!vis);vis=false}else if(el.classList.contains('post-card')&&!el.classList.contains('hidden')){vis=true}}}filterPosts=F;si.addEventListener('input',function(){if(si.value.trim()){window.dateFilter='';document.getElementById('dateBadge').classList.remove('visible');document.querySelectorAll('#calendarCard .cal-day.active-date').forEach(function(e){e.classList.remove('active-date')})}F()});fb.addEventListener('click',e=>{const ch=e.target.closest('.filter-chip');if(!ch)return;const tg=ch.dataset.tag;fb.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));ch.classList.add('active');const u=new URL(location);tg?u.searchParams.set('tag',tg):u.searchParams.delete('tag');history.replaceState({},'',u);active=tg;F()});F()}();
+
+    /* ═══════════ 返回顶部 ═══════════ */
+    !function(){const b=document.getElementById('backToTop');addEventListener('scroll',()=>b.classList.toggle('visible',scrollY>400));b.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}))}();
+
+    /* ═══════════ 页面转场 ═══════════ */
+    !function(){document.body.classList.add('page-entering');addEventListener('load',function(){setTimeout(function(){document.body.classList.remove('page-entering')},700)});addEventListener('pageshow',function(e){if(e.persisted){document.body.classList.remove('page-exiting','page-entering');document.querySelectorAll('*').forEach(function(el){el.style.animation='none';el.offsetHeight;el.style.animation=''})}})}();
+    if(location.protocol!=='file:')!function(){document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var h=a.getAttribute('href');if(!h||h[0]==='#'||h.indexOf('://')>0||h.indexOf('//')===0||a.target==='_blank')return;e.preventDefault();document.body.classList.add('page-exiting');setTimeout(function(){location.assign(h)},360)})}();
+    </script>
+    
+    <script src="js/viewer/busuanzi.js"></script>
+    <script>
+    (function(){
+    Viewer.getGlobalCount().then(function(n){var e=document.getElementById('vGlobal');if(e)e.innerHTML=n.toLocaleString()});
+    getVisitCount().then(function(n){var e=document.getElementById('vCounter');if(e)e.innerHTML=n.toLocaleString()});
+    Viewer.getUniqueCount().then(function(r){var e=document.getElementById('vUnique');if(e)e.innerHTML=r.count.toLocaleString()});
+    })();
+    </script>
+    
+</body>
+</html>
