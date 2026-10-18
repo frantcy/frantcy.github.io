@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" href="https://frantcy.github.io/images/favicon.jpg">
+<title>写一篇 — Frantcy 的日常</title>
+<script>
+(function(){var s=localStorage.getItem('blog-theme');
+if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})();
+</script>
+<style>
+:root{
+  --bg:#fdfbf7; --card-bg:#ffffff; --text:#2c2416; --text-secondary:#6b5e4a;
+  --accent:#b1743e; --accent-hover:#8b5a2e; --accent-light:#f5efe3;
+  --border:#e5ddd0; --shadow:0 1px 3px rgba(44,36,22,.06); --radius:12px;
+}
+html.dark{
+  --bg:#1a1a1f; --card-bg:#25252b; --text:#d4d0c8; --text-secondary:#9a9488;
+  --accent:#d4945a; --accent-hover:#e8a86e; --accent-light:#2e2e35;
+  --border:#36363d; --shadow:0 1px 3px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:1rem 1rem calc(2rem + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;margin:.4rem 0 1.2rem}
+.top a{color:var(--text-secondary);text-decoration:none;font-size:.9rem}
+h1{font-size:1.25rem}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1rem;box-shadow:var(--shadow);margin-bottom:1rem}
+label{display:block;font-size:.82rem;color:var(--text-secondary);margin:0 0 .35rem}
+input,select,textarea{width:100%;font-family:inherit;font-size:1rem;color:var(--text);
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.7rem .85rem;outline:none}
+textarea{min-height:44vh;resize:vertical;line-height:1.8}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(177,116,62,.08)}
+.row{display:flex;gap:.6rem}
+.row>*{flex:1}
+.field{margin-bottom:.9rem}
+.hint{font-size:.78rem;color:var(--text-secondary);margin-top:.35rem}
+.btn{display:block;width:100%;padding:.9rem;font-size:1rem;font-weight:500;color:#fff;
+  background:var(--accent);border:none;border-radius:12px;cursor:pointer}
+.btn:active{background:var(--accent-hover)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border);margin-top:.6rem;font-weight:400}
+.status{margin-top:1rem;font-size:.9rem;display:none;padding:.8rem 1rem;border-radius:10px}
+.status.show{display:block}
+.status.ok{background:var(--accent-light);color:var(--accent-hover)}
+.status.err{background:#fce9e7;color:#a32d2d}
+.status a{color:var(--accent-hover)}
+details{margin-top:1rem;font-size:.85rem}
+summary{cursor:pointer;color:var(--text-secondary)}
+ol{margin:.6rem 0 .6rem 1.2rem;color:var(--text-secondary)}
+code{background:var(--accent-light);padding:.1rem .35rem;border-radius:4px;font-size:.85em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="https://frantcy.github.io/">← 返回博客</a>
+    <a href="https://frantcy.github.io/directory.html">目录</a>
+  </div>
+
+  <h1 style="margin-bottom:1rem">写一篇</h1>
+
+  <div id="setup" class="card" style="display:none">
+    <div class="field">
+      <label>第一次在这台设备上用，先填 GitHub 令牌</label>
+      <input id="tok" type="password" placeholder="github_pat_... 或 ghp_..." autocomplete="off">
+      <div class="hint">令牌只保存在你这台手机的浏览器里，不会上传给任何人。建议用 <b>fine-grained token</b>，只勾这一个仓库的 Contents: Read and write。</div>
+    </div>
+    <button class="btn" id="saveTok">保存令牌</button>
+    <details>
+      <summary>怎么拿到这个令牌？</summary>
+      <ol>
+        <li>打开 github.com → 右上角头像 → <b>Settings</b></li>
+        <li><b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b></li>
+        <li><b>Generate new token</b>，Repository access 选 <b>Only select repositories</b> → 选 <code>frantcy/frantcy.github.io</code></li>
+        <li>Permissions → <b>Contents: Read and write</b>，然后生成并复制</li>
+        <li>粘贴到上面输入框，点保存令牌</li>
+      </ol>
+    </details>
+  </div>
+
+  <div id="form" style="display:none">
+    <div class="card">
+      <div class="row">
+        <div class="field" style="margin-bottom:0">
+          <label>日期</label>
+          <input id="date" type="date">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>分类（决定标签）</label>
+          <select id="dir">
+            <option value="日记">日记</option>
+            <option value="随笔">随笔</option>
+            <option value="技术">技术</option>
+            <option value="读后">读后</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:.9rem">
+        <label>标题</label>
+        <input id="title" placeholder="留空就用当天日期">
+      </div>
+      <div class="field">
+        <label>标签（逗号分隔，可留空）</label>
+        <input id="tags" placeholder="日记, 生活">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>正文（支持 Markdown）</label>
+        <textarea id="body" placeholder="今天……"></textarea>
+      </div>
+    </div>
+
+    <button class="btn" id="publish">保存并上传</button>
+    <button class="btn ghost" id="reset">换一个令牌</button>
+    <div class="status" id="status"></div>
+  </div>
+</div>
+
+<script>
+var OWNER = "frantcy", REPO = "frantcy.github.io", SITE = "https://frantcy.github.io";
+var TOKEN_KEY = "openblogger_token_" + OWNER + "_" + REPO;
+
+function el(id){ return document.getElementById(id); }
+function pad(n){ return n < 10 ? "0" + n : "" + n; }
+
+function todayStr(){
+  var d = new Date();
+  return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+}
+function cnDate(s){
+  var p = s.split("-");
+  return p[0] + "年" + p[1] + "月" + p[2] + "日";
+}
+
+function show(id){ el(id).style.display = ""; }
+function hide(id){ el(id).style.display = "none"; }
+function setStatus(msg, ok){
+  var s = el("status");
+  s.className = "status show " + (ok ? "ok" : "err");
+  s.innerHTML = msg;
+}
+
+function b64(str){
+  var bytes = new TextEncoder().encode(str), bin = "";
+  for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+function api(method, path, body){
+  var opts = {
+    method: method,
+    headers: { "Authorization": "Bearer " + localStorage.getItem(TOKEN_KEY),
+               "Accept": "application/vnd.github+json" }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  return fetch("https://api.github.com" + path, opts).then(function(r){
+    return r.json().then(function(j){
+      if (!r.ok) {
+        var m = (j && j.message) ? j.message : ("HTTP " + r.status);
+        throw new Error(m);
+      }
+      return j;
+    });
+  });
+}
+
+function fileExists(path){
+  return fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + encodeURI(path), {
+    headers: { "Authorization": "Bearer " + localStorage.getItem(TOKEN_KEY),
+               "Accept": "application/vnd.github+json" }
+  }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+}
+
+// 同一天已经写过就在文件名后面加 -2、-3……
+function pickPath(base){
+  function probe(n){
+    var p = n === 1 ? base : base.replace(/\.md$/, "-" + n + ".md");
+    return fileExists(p).then(function(e){ return e ? probe(n + 1) : p; });
+  }
+  return probe(1);
+}
+
+el("date").value = todayStr();
+
+if (localStorage.getItem(TOKEN_KEY)) { show("form"); } else { show("setup"); }
+
+el("saveTok").onclick = function(){
+  var t = el("tok").value.trim();
+  if (!t) { alert("请先粘贴令牌"); return; }
+  localStorage.setItem(TOKEN_KEY, t);
+  hide("setup"); show("form"); setStatus("令牌已保存在本机。", true);
+};
+
+el("reset").onclick = function(){
+  if (confirm("清除本机保存的令牌？")) {
+    localStorage.removeItem(TOKEN_KEY);
+    hide("form"); show("setup"); el("tok").value = ""; setStatus("");
+  }
+};
+
+el("date").onchange = function(){
+  if (!el("title").value) el("title").placeholder = cnDate(el("date").value);
+};
+el("title").placeholder = cnDate(todayStr());
+
+var busy = false;
+el("publish").onclick = function(){
+  if (busy) return;
+  var date = el("date").value || todayStr();
+  var d = new Date(date);
+  var cnDay = cnDate(date);
+  var dir = el("dir").value;
+  var title = el("title").value.trim() || cnDay;
+  var tags = el("tags").value.trim() || dir;
+  var body = el("body").value;
+
+  if (!body.trim()) { setStatus("正文还是空的，写点什么吧。", false); return; }
+
+  var time = d.getFullYear() + "." + (d.getMonth()+1) + "." + d.getDate();
+  var content = "time: " + time + "\ntag: " + tags + "\ntitle: " + title + "\n\n" + body.replace(/\s*$/, "") + "\n";
+  var base = "Raw/" + dir + "/" + cnDay + ".md";
+
+  busy = true; el("publish").disabled = true; setStatus("正在上传…", true);
+  pickPath(base).then(function(path){
+    if (!path) throw new Error("找不到可用的文件名");
+    return fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + encodeURI(path), {
+      headers: { "Authorization": "Bearer " + localStorage.getItem(TOKEN_KEY),
+                 "Accept": "application/vnd.github+json" }
+    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(existing){
+      var payload = { message: "新增文章：" + title, content: b64(content) };
+      if (existing && existing.sha) payload.sha = existing.sha;
+      return api("PUT", "/repos/" + OWNER + "/" + REPO + "/contents/" + encodeURI(path), payload);
+    });
+  }).then(function(){
+    setStatus('✅ 已上传到 GitHub，正在自动构建，约 1 分钟后刷新 <a href="' + SITE + '/">博客首页</a> 就能看到。', true);
+    el("body").value = "";
+  }).catch(function(e){
+    setStatus("❌ 上传失败：" + e.message + "。如果是 401，点下面「换一个令牌」重新填。", false);
+  }).then(function(){
+    busy = false; el("publish").disabled = false;
+  });
+};
+</script>
+</body>
+</html>
